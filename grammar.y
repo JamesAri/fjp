@@ -9,13 +9,17 @@
     Token token;
 }
 
-// Data types
+/////////////
+// DATA TYPES
+/////////////
 %token <location> TYPE_INT
 %token <location> TYPE_CHAR
 %token <location> TYPE_BOOL
 %token <location> TYPE_VOID
 
-// Branch
+/////////
+// BRANCH
+/////////
 %token <location> CONST
 %token <location> IF
 %token <location> ELSE
@@ -29,7 +33,9 @@
 %token <location> CONTINUE
 %token <location> RETURN
 
-// Operators
+////////////
+// OPERATORS
+////////////
 %token <location> LOGICAL_AND
 %token <location> LOGICAL_OR
 %token <location> EQUAL
@@ -37,16 +43,23 @@
 %token <location> GREATER_EQUAL
 %token <location> LESS_EQUAL
 
-// Values
+/////////
+// VALUES
+/////////
 %token <token> INTEGER
 %token <token> CHAR
 %token <token> BOOL
 %token <token> IDENTIFIER
 
-%nonassoc   IF_UNMAT
+%nonassoc   IF_UNMATCHED
 %nonassoc   ELSE
 
+%right U_PLUS U_MINUS
+
 %%
+//////////
+// PROGRAM
+//////////
 program:
     statement_list
     ;
@@ -85,22 +98,48 @@ branch_body:
     | statement_block
     ;
 
-// If statement
+/////////////// 
+// IF STATEMENT
+/////////////// 
 if_statement:
     unmatched_if_statement
     | matched_if_statement
     ;
 
 unmatched_if_statement:     
-    IF '(' expression ')' branch_body %prec IF_UNMAT
+    IF '(' expression ')' branch_body %prec IF_UNMATCHED
     ;
 
 matched_if_statement:
     IF '(' expression ')' branch_body ELSE branch_body
     ;
 
+/////////////// 
+// SWITCH RULES
+/////////////// 
+switch_statement:
+    SWITCH '(' expression ')' branch_body
+    ;
 
-// Expressions
+case_statement:
+    CASE expression ':' statement
+    | DEFAULT ':' statement
+    ;
+
+//////////////
+// WHILE RULES
+//////////////
+while_statement:
+    WHILE '(' expression ')' branch_body
+    ;
+
+do_while_statement:
+    DO branch_body WHILE '(' expression ')'
+    ;
+
+//////////////
+// EXPRESSIONS
+//////////////
 expression:
     expression_value
     | expression_operation
@@ -132,7 +171,9 @@ expression_operation:
     | '!' expression
     ;
 
-// DECLARATIONS    
+/////////////// 
+// DECLARATIONS   
+///////////////  
 single_declaration:
     type identifier
     | CONST type identifier
@@ -163,5 +204,66 @@ value:
 identifier:
     IDENTIFIER 
     ;
+
+/////////////////
+// FUNCTION RULES
+/////////////////
+function:
+    function_header statement_block
+    ;
+
+function_header:
+    type identifier '(' param_list ')'
+    ;
+
+param_list:
+    | single_declaration
+    | param_list_ext ',' single_declaration
+    ;
+
+param_list_ext:
+    single_declaration
+    | param_list_ext ',' single_declaration
+    ;
+
+function_call:
+    identifier '(' arg_list ')'
+    ;
+
+arg_list:
+    | expression
+    | arg_list_ext ',' expression
+    ;
+
+arg_list_ext:
+    expression
+    | arg_list_ext ',' expression
+    ;
+
+return_statement:
+    RETURN expression
+    | RETURN
+    ;
+
+////////////
+// FOR RULES
+////////////
+for_statement:
+    for_header branch_body
+    ;
+
+for_header:
+    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'
+    ;
+
+for_init_statement:
+    | single_declaration
+    | expression
+    ;
+
+for_expression:
+    | expression
+    ;
+
 
 %%

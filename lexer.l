@@ -8,7 +8,9 @@ LINE_COMMENT "//"(.)*
 %%
 
 %{
+////////////////////
 // DATA TYPES TOKENS
+////////////////////
 %}
 <INITIAL>"int"   something(); return TYPE_INT;
 <INITIAL>"char"  something(); return TYPE_CHAR;
@@ -16,7 +18,9 @@ LINE_COMMENT "//"(.)*
 <INITIAL>"void"  something(); return TYPE_VOID;
 
 %{
+////////////////
 // BRANCH TOKENS
+//////////////// 
 %}
 <INITIAL>"const"    something(); return CONST;
 <INITIAL>"if"       something(); return IF;
@@ -32,7 +36,9 @@ LINE_COMMENT "//"(.)*
 <INITIAL>"return"   something(); return RETURN;
 
 %{
+////////////////// 
 // OPERATOR TOKENS
+////////////////// 
 %}
 <INITIAL>"=="   something(); return EQUAL;
 <INITIAL>"!="   something(); return NOT_EQUAL;
@@ -43,7 +49,9 @@ LINE_COMMENT "//"(.)*
 <INITIAL>[-+*/%&!<>=(){}[\],:;] something(); return yytext[0];
 
 %{
+//////////////// 
 // VALUES TOKENS
+////////////////
 %}
 <INITIAL>{INTEGER}      something(); return INT;
 <INITIAL>(\'.\')        something(); return CHAR;
@@ -52,7 +60,9 @@ LINE_COMMENT "//"(.)*
 <INITIAL>{IDENTIFIER}   something(); return IDENTIFIER;
 
 %{
+/////////////// 
 // OTHER TOKENS
+///////////////
 %}
 
 %%
