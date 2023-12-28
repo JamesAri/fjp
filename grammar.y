@@ -49,10 +49,18 @@
 //////////////
 // ASSOC/PREC
 //////////////
+%right      '='
+%left       LOGICAL_OR
+%left       LOGICAL_AND
+%left       EQUAL NOT_EQUAL
+%left       LESS_EQUAL GREATER_EQUAL '<' '>'
+%left       '-' '+'
+%left       '*' '/' '%'
+%right      '!'
+%right      U_PLUS U_MINUS
+
 %nonassoc   IF_UNMATCHED
 %nonassoc   ELSE
-
-%right U_PLUS U_MINUS
 
 %%
 //////////
