@@ -60,8 +60,8 @@
 //////////
 // PROGRAM
 //////////
-program:
-    statement_list
+program: /* e */
+    | statement_list
     ;
 
 statement_list:
@@ -78,8 +78,6 @@ statement_block:
 
 statement:
     ';'
-    | BREAK ';'
-    | CONTINUE ';'
     | expression ';'
     | single_declaration ';'
     | multi_declaration ';'
@@ -91,6 +89,8 @@ statement:
     | for_statement
     | function
     | return_statement ';'
+	| BREAK ';'
+    | CONTINUE ';'
     ;
 
 branch_body:
@@ -136,6 +136,28 @@ while_statement:
 do_while_statement:
     DO branch_body WHILE '(' expression ')'
     ;
+
+
+////////////
+// FOR RULES
+////////////
+for_statement:
+    for_header branch_body
+    ;
+
+for_header:
+    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'
+    ;
+
+for_init_statement: /* e */
+    | single_declaration
+    | expression
+    ;
+
+for_expression: /* e */
+    | expression
+    ;
+
 
 //////////////
 // EXPRESSIONS
@@ -216,7 +238,7 @@ function_header:
     type identifier '(' param_list ')'
     ;
 
-param_list:
+param_list: /* e */
     | single_declaration
     | param_list_ext ',' single_declaration
     ;
@@ -230,7 +252,7 @@ function_call:
     identifier '(' arg_list ')'
     ;
 
-arg_list:
+arg_list: /* e */
     | expression
     | arg_list_ext ',' expression
     ;
@@ -243,26 +265,6 @@ arg_list_ext:
 return_statement:
     RETURN expression
     | RETURN
-    ;
-
-////////////
-// FOR RULES
-////////////
-for_statement:
-    for_header branch_body
-    ;
-
-for_header:
-    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'
-    ;
-
-for_init_statement:
-    | single_declaration
-    | expression
-    ;
-
-for_expression:
-    | expression
     ;
 
 
