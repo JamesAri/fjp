@@ -46,6 +46,9 @@
 %token BOOL
 %token IDENTIFIER
 
+//////////////
+// ASSOC/PREC
+//////////////
 %nonassoc   IF_UNMATCHED
 %nonassoc   ELSE
 
