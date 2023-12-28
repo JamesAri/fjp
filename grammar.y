@@ -4,52 +4,47 @@
     void yyerror(const char* s);
 %}
 
-%union {
-    Location location;
-    Token token;
-}
-
 /////////////
 // DATA TYPES
 /////////////
-%token <location> TYPE_INT
-%token <location> TYPE_CHAR
-%token <location> TYPE_BOOL
-%token <location> TYPE_VOID
+%token TYPE_INT
+%token TYPE_CHAR
+%token TYPE_BOOL
+%token TYPE_VOID
 
 /////////
 // BRANCH
 /////////
-%token <location> CONST
-%token <location> IF
-%token <location> ELSE
-%token <location> SWITCH
-%token <location> CASE
-%token <location> DEFAULT
-%token <location> FOR
-%token <location> DO
-%token <location> WHILE
-%token <location> BREAK
-%token <location> CONTINUE
-%token <location> RETURN
+%token CONST
+%token IF
+%token ELSE
+%token SWITCH
+%token CASE
+%token DEFAULT
+%token FOR
+%token DO
+%token WHILE
+%token BREAK
+%token CONTINUE
+%token RETURN
 
 ////////////
 // OPERATORS
 ////////////
-%token <location> LOGICAL_AND
-%token <location> LOGICAL_OR
-%token <location> EQUAL
-%token <location> NOT_EQUAL
-%token <location> GREATER_EQUAL
-%token <location> LESS_EQUAL
+%token LOGICAL_AND
+%token LOGICAL_OR
+%token EQUAL
+%token NOT_EQUAL
+%token GREATER_EQUAL
+%token LESS_EQUAL
 
 /////////
 // VALUES
 /////////
-%token <token> INTEGER
-%token <token> CHAR
-%token <token> BOOL
-%token <token> IDENTIFIER
+%token INTEGER
+%token CHAR
+%token BOOL
+%token IDENTIFIER
 
 %nonassoc   IF_UNMATCHED
 %nonassoc   ELSE
