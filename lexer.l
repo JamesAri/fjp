@@ -2,6 +2,7 @@
 
 DIGIT       [0-9]
 INTEGER     [0-9]+
+FLOAT       (([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*))
 LETTER      [a-zA-Z_]
 IDENTIFIER  {LETTER}({LETTER}|{DIGIT})*
 LINE_COMMENT "//"(.)*
@@ -54,6 +55,7 @@ LINE_COMMENT "//"(.)*
 ////////////////
 %}
 <INITIAL>{INTEGER}      something(); return INT;
+<INITIAL>{FLOAT}        something(); return FLOAT;
 <INITIAL>(\'.\')        something(); return CHAR;
 <INITIAL>"true"         something(); return BOOL;
 <INITIAL>"false"        something(); return BOOL;
@@ -64,6 +66,12 @@ LINE_COMMENT "//"(.)*
 // OTHER TOKENS
 ///////////////
 %}
+<INITIAL>{LINE_COMMENT}		ADVANCE_CURSOR;
+<INITIAL>"/*"               ADVANCE_CURSOR; BEGIN BLOCK_COMMENT;
+<BLOCK_COMMENT>"*/"         ADVANCE_CURSOR; BEGIN INITIAL;
+<BLOCK_COMMENT>.            ADVANCE_CURSOR;
+
+<INITIAL>.                  something(); return yytext[0];
 
 %%
 
