@@ -1,3 +1,7 @@
+%{
+#include "y.tab.h"
+%}
+
 %s BLOCK_COMMENT
 
 DIGIT       [0-9]
@@ -13,68 +17,64 @@ LINE_COMMENT "//"(.)*
 // DATA TYPES TOKENS
 ////////////////////
 %}
-<INITIAL>"int"   something(); return TYPE_INT;
-<INITIAL>"char"  something(); return TYPE_CHAR;
-<INITIAL>"bool"  something(); return TYPE_BOOL;
-<INITIAL>"void"  something(); return TYPE_VOID;
+<INITIAL>"int"   return TYPE_INT;
+<INITIAL>"char"  return TYPE_CHAR;
+<INITIAL>"bool"  return TYPE_BOOL;
+<INITIAL>"void"  return TYPE_VOID;
 
 %{
 ////////////////
 // BRANCH TOKENS
 //////////////// 
 %}
-<INITIAL>"const"    something(); return CONST;
-<INITIAL>"if"       something(); return IF;
-<INITIAL>"else"     something(); return ELSE;
-<INITIAL>"switch"   something(); return SWITCH;
-<INITIAL>"case"     something(); return CASE;
-<INITIAL>"default"  something(); return DEFAULT;
-<INITIAL>"for"      something(); return FOR;
-<INITIAL>"do"       something(); return DO;
-<INITIAL>"while"    something(); return WHILE;
-<INITIAL>"break"    something(); return BREAK;
-<INITIAL>"continue" something(); return CONTINUE;
-<INITIAL>"return"   something(); return RETURN;
+<INITIAL>"const"    return CONST;
+<INITIAL>"if"       return IF;
+<INITIAL>"else"     return ELSE;
+<INITIAL>"switch"   return SWITCH;
+<INITIAL>"case"     return CASE;
+<INITIAL>"default"  return DEFAULT;
+<INITIAL>"for"      return FOR;
+<INITIAL>"do"       return DO;
+<INITIAL>"while"    return WHILE;
+<INITIAL>"break"    return BREAK;
+<INITIAL>"continue" return CONTINUE;
+<INITIAL>"return"   return RETURN;
 
 %{
 ////////////////// 
 // OPERATOR TOKENS
 ////////////////// 
 %}
-<INITIAL>"=="   something(); return EQUAL;
-<INITIAL>"!="   something(); return NOT_EQUAL;
-<INITIAL>">="   something(); return GREATER_EQUAL;
-<INITIAL>"<="   something(); return LESS_EQUAL;
-<INITIAL>"&&"   something(); return LOGICAL_AND;
-<INITIAL>"||"   something(); return LOGICAL_OR;
-<INITIAL>[-+*/%&!<>=(){}[\],:;] something(); return yytext[0];
+<INITIAL>"=="   return EQUAL;
+<INITIAL>"!="   return NOT_EQUAL;
+<INITIAL>">="   return GREATER_EQUAL;
+<INITIAL>"<="   return LESS_EQUAL;
+<INITIAL>"&&"   return LOGICAL_AND;
+<INITIAL>"||"   return LOGICAL_OR;
+<INITIAL>[-+*/%&!<>=(){}[\],:;] return yytext[0];
 
 %{
 //////////////// 
 // VALUES TOKENS
 ////////////////
 %}
-<INITIAL>{INTEGER}      something(); return INT;
-<INITIAL>{FLOAT}        something(); return FLOAT;
-<INITIAL>(\'.\')        something(); return CHAR;
-<INITIAL>"true"         something(); return BOOL;
-<INITIAL>"false"        something(); return BOOL;
-<INITIAL>{IDENTIFIER}   something(); return IDENTIFIER;
+<INITIAL>{INTEGER}      return INT;
+<INITIAL>{FLOAT}        return FLOAT;
+<INITIAL>(\'.\')        return CHAR;
+<INITIAL>"true"         return BOOL;
+<INITIAL>"false"        return BOOL;
+<INITIAL>{IDENTIFIER}   return IDENTIFIER;
 
 %{
 /////////////// 
 // OTHER TOKENS
 ///////////////
 %}
-<INITIAL>{LINE_COMMENT}		ADVANCE_CURSOR;
-<INITIAL>"/*"               ADVANCE_CURSOR; BEGIN BLOCK_COMMENT;
-<BLOCK_COMMENT>"*/"         ADVANCE_CURSOR; BEGIN INITIAL;
-<BLOCK_COMMENT>.            ADVANCE_CURSOR;
+<INITIAL>{LINE_COMMENT}		;
+<INITIAL>"/*"               BEGIN BLOCK_COMMENT;
+<BLOCK_COMMENT>"*/"         BEGIN INITIAL;
+<BLOCK_COMMENT>.            ;
 
-<INITIAL>.                  something(); return yytext[0];
+<INITIAL>.                  return yytext[0];
 
 %%
-
-int yywrap() {
-    return 1;
-}

@@ -1,7 +1,10 @@
 %{
-    extern int yylex();
+#include <stdio.h>
+#include <stdlib.h>
 
-    void yyerror(const char* s);
+void yyerror(const char* s);
+int yywrap(void);
+extern int yylex();
 %}
 
 /////////////
@@ -41,7 +44,8 @@
 /////////
 // VALUES
 /////////
-%token INTEGER
+%token INT
+%token FLOAT
 %token CHAR
 %token BOOL
 %token IDENTIFIER
@@ -224,7 +228,8 @@ type:
     ;
 
 value:
-    INTEGER 
+    INT
+	| FLOAT
     | CHAR 
     | BOOL 
     ;
@@ -275,3 +280,19 @@ return_statement:
 
 
 %%
+
+int main(int argc, char **argv)
+{
+  yyparse();
+  return 0;
+}
+
+void yyerror (char const *s) {
+	fprintf (stderr, "%s\n", s);
+}
+
+int yywrap(void)
+{
+  return 1;
+}
+
