@@ -1,4 +1,6 @@
 %{
+#include "nodes.h"
+
 #include "y.tab.h"
 %}
 

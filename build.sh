@@ -1,23 +1,36 @@
 #!/bin/bash
 
+mkdir -p build >/dev/null 2>&1
+cd build
+
+# path to lex file
+lex_file="../src/rules/lex.l"
+
+# path to grammar file
+grammar_file="../src/rules/grammar.y"
+
+# gcc definitions
+gcc_files="-I ../src/nodes y.tab.c lex.yy.c"
+gcc_flags="-std=c++11"
+
 win_build() {
 	echo "Windows build"
 	# Bison
-	bison -dy grammar.y
+	bison -dy $grammar_file
 	# Flex
-	flex lexer.l
+	flex $lex_file
 	# GCC
-	gcc lex.yy.c y.tab.c -o compiler.exe
+	g++ $gcc_flags $gcc_files -o compiler.exe
 }
 
 osx_build() {
 	echo "Mac OS X build"
 	# Bison
-	bison -dy grammar.y
+	bison -dy $grammar_file
 	# Flex
-	flex lexer.l
+	flex $lex_file
 	# GCC
-	gcc lex.yy.c y.tab.c -o compiler -ll
+	g++ $gcc_flags $gcc_files -o compiler -ll
 }
 
 if [ "$(uname)" == "Darwin" ]; then
