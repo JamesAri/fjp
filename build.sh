@@ -7,12 +7,22 @@ win_build() {
 	# Flex
 	flex lexer.l
 	# GCC
-	gcc lex.yy.c y.tab.c -o prog.exe
+	gcc lex.yy.c y.tab.c -o compiler.exe
+}
+
+osx_build() {
+	echo "Mac OS X build"
+	# Bison
+	bison -dy grammar.y
+	# Flex
+	flex lexer.l
+	# GCC
+	gcc lex.yy.c y.tab.c -o compiler -ll
 }
 
 if [ "$(uname)" == "Darwin" ]; then
 	# Mac OS X platform
-	echo "TODO: Mac OS X build"
+	osx_build
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 	# GNU/Linux platform
 	echo "TODO: GNU/Liux build"
