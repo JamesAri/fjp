@@ -194,6 +194,7 @@ expression:
 
 expression_value:
     '(' expression ')'									{}
+    | identifier												{}		
     | value												{}		
     | function_call										{}
     ;
