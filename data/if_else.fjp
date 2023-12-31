@@ -1,6 +1,5 @@
 int a;
 
-
 int main()
 {
 	if (1)
@@ -11,7 +10,6 @@ int main()
 	{
 		a = 2;
 	}
-	
+
 	return 0;
 }
-

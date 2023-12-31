@@ -78,6 +78,6 @@ LINE_COMMENT "//"(.)*
 <BLOCK_COMMENT>"*/"         BEGIN INITIAL;
 <BLOCK_COMMENT>.            ;
 
-<INITIAL>.                  return yytext[0];
+<INITIAL>.                  ;
 
 %%

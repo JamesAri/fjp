@@ -3,9 +3,17 @@
 #include "utils/definitions.h"
 
 extern int yyparse();
+extern int yydebug;
 extern FILE* yyin;
 
 std::string sourceFile;
+
+void enable_bison_debug_messages()
+{
+	#ifdef YYDEBUG
+    yydebug = 1;
+    #endif
+}
 
 void parse_argv(int argc, char* argv[])
 {
@@ -27,6 +35,15 @@ void parse_argv(int argc, char* argv[])
 	}
 	{
 		fclose(file);
+	}
+
+	for(int i = 2; i < argc; i++)
+	{	
+		// -d flag to enable bison debug messages
+		if (strcmp(argv[i], "-d") == 0)
+		{
+			enable_bison_debug_messages();
+		}
 	}
 }
 

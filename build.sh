@@ -12,7 +12,8 @@ grammar_file="../src/rules/grammar.y"
 # gcc definitions
 gcc_files="-I ../src/nodes ../src/main.cpp lex.yy.cpp y.tab.cpp"
 
-gcc_flags="-std=c++11"
+# -DYYDEBUG=1 for bison verbose messages
+gcc_flags="-std=c++11 -DYYDEBUG=1"
 
 win_build() {
 	echo "Windows build"

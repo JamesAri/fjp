@@ -5,6 +5,12 @@
 
 class CBlockNode {
 	public:
+
+		CBlockNode()
+		{
+			std::cout << "CBlockNode constructor" << std::endl;
+		};
+
 		void AddStatement(CStatementNode *statement)
 		{
 			// Do nothing
