@@ -1,13 +1,20 @@
 #include <iostream>
 
 #include "utils/definitions.h"
+#include "nodes/inode.h"
 
+// Bison specific prototypes
 extern int yyparse();
 extern int yydebug;
 extern FILE* yyin;
 
+// Root node of the AST
+extern INode* rootNode;
+
+// Source file to be parsed
 std::string sourceFile;
 
+// Enables bison debug messages
 void enable_bison_debug_messages()
 {
 	#ifdef YYDEBUG

@@ -78,6 +78,7 @@ LINE_COMMENT "//"(.)*
 <BLOCK_COMMENT>"*/"         BEGIN INITIAL;
 <BLOCK_COMMENT>.            ;
 
-<INITIAL>.                  ;
+<INITIAL>[ \t\r\n]      	; /* skip whitespace which are not part of a string */
+<INITIAL>.                  return yytext[0];
 
 %%

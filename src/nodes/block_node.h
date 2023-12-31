@@ -3,7 +3,8 @@
 
 #include "statement_node.h"
 
-class CBlockNode {
+class CBlockNode : public INode
+{
 	public:
 
 		CBlockNode()

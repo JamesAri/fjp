@@ -7,6 +7,8 @@
 void yyerror(const char* s);
 int yywrap(void);
 extern int yylex();
+
+INode *rootNode = NULL;
 %}
 
 %union {
@@ -18,6 +20,15 @@ extern int yylex();
 
 %type <block_node>			program statement_block
 %type <statement_node>		statement branch_body for_init_statement
+
+/* %destructor {
+    if ($$ != NULL) 
+	{
+        delete $$;
+        $$ = NULL;
+    }
+} */
+/* <block_node> <statement_node> */
 
 /////////////
 // DATA TYPES
@@ -83,8 +94,8 @@ extern int yylex();
 // ROOT
 //////////
 program: 
-	/* e */									{}
-    | statement_list						{}
+	/* e */									{$$ = NULL; rootNode = new CBlockNode();}
+    | statement_list						{$$ = NULL; rootNode = new CBlockNode();}
     ;
 
 statement_list:

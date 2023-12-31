@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-class CStatementNode 
+class CStatementNode : public INode
 {
 	public:
 
