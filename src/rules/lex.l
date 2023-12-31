@@ -1,7 +1,8 @@
+%option noyywrap
 %{
 #include "nodes.h"
 
-#include "y.tab.h"
+#include "y.tab.hpp"
 %}
 
 %s BLOCK_COMMENT

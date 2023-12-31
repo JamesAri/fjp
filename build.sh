@@ -10,15 +10,16 @@ lex_file="../src/rules/lex.l"
 grammar_file="../src/rules/grammar.y"
 
 # gcc definitions
-gcc_files="-I ../src/nodes y.tab.c lex.yy.c"
+gcc_files="-I ../src/nodes ../src/main.cpp lex.yy.cpp y.tab.cpp"
+
 gcc_flags="-std=c++11"
 
 win_build() {
 	echo "Windows build"
 	# Bison
-	bison -dy $grammar_file
+	bison -d $grammar_file -o y.tab.cpp
 	# Flex
-	flex $lex_file
+	flex -o lex.yy.cpp $lex_file
 	# GCC
 	g++ $gcc_flags $gcc_files -o compiler.exe
 }
@@ -26,9 +27,9 @@ win_build() {
 osx_build() {
 	echo "Mac OS X build"
 	# Bison
-	bison -dy $grammar_file
+	bison -d $grammar_file -o y.tab.cpp
 	# Flex
-	flex $lex_file
+	flex -o lex.yy.cpp $lex_file
 	# GCC
 	g++ $gcc_flags $gcc_files -o compiler -ll
 }

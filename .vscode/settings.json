@@ -1,6 +1,4 @@
 {
-	"files.associations": {
-		"statement_node.h": "c"
-	},
-	"cSpell.enabled": true
+	"cSpell.enabled": true,
+	"C_Cpp.default.compilerPath": "/usr/bin/g++",
 }

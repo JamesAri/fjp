@@ -80,7 +80,7 @@ extern int yylex();
 
 %%
 //////////
-// PROGRAM
+// ROOT
 //////////
 program: 
 	/* e */									{}
@@ -297,12 +297,6 @@ return_statement:
 
 
 %%
-
-int main(int argc, char **argv)
-{
-  yyparse();
-  return 0;
-}
 
 void yyerror (char const *s) {
 	fprintf (stderr, "%s\n", s);

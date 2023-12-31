@@ -3,10 +3,12 @@
 
 class CStatementNode 
 {
-	void Compile()
-	{
-		// Do nothing
-	};
+	public:
+
+		void Compile()
+		{
+			// Do nothing
+		};
 };
 
 #endif // __STATEMENT_NODE_H_
