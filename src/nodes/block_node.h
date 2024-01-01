@@ -19,7 +19,7 @@ class CBlockNode : public INode
 
 		void Compile()
 		{
-			// Do nothing
+			std::cout << "Compiling" << std::endl;
 		};
 };
 

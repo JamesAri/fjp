@@ -8,7 +8,7 @@ extern int yyparse();
 extern int yydebug;
 extern FILE* yyin;
 
-// Root node of the AST
+// Root node of the AST - created in scanner
 extern INode* rootNode;
 
 // Source file to be parsed
