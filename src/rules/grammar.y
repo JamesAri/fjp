@@ -2,14 +2,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// definitions with all the possible nodes
 #include "nodes.h"
 
-void yyerror(const char* s);
-int yywrap(void);
-extern int yylex();
+// includes needed for fure parser and location support
+#include "y.tab.hpp"
+#include "lex.yy.h"
 
+
+// flex has noyywrap option, but just for compatibility reasons, leave this prototype here
+int yywrap(void);
+
+// parser prototypes (with location support)
+void yyerror (YYLTYPE *, char const *);
+extern int yylex(YYSTYPE *, YYLTYPE *);
+
+// root node of the program
 INode *rootNode = NULL;
 %}
+
+%locations
+
+// deprecated directive
+/* %pure-parser */ 
+%define api.pure full
 
 %union {
 	CBlockNode* block_node;
@@ -310,8 +326,12 @@ return_statement:
 
 %%
 
-void yyerror (char const *s) {
-	fprintf (stderr, "%s\n", s);
+void yyerror (YYLTYPE *locp, char const *msg)
+{
+	fprintf (stderr, "%d.%d-%d.%d: %s\n",
+			 locp->first_line, locp->first_column,
+			 locp->last_line, locp->last_column,
+			 msg);
 }
 
 int yywrap(void)

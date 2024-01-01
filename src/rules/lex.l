@@ -1,9 +1,12 @@
-%option noyywrap
 %{
 #include "nodes.h"
 
 #include "y.tab.hpp"
 %}
+%option warn noyywrap
+%option bison-bridge bison-locations
+/* Creates file taht contains function prototypes, extern variables, and types used by the scanner */
+%option header-file="lex.yy.h"
 
 %s BLOCK_COMMENT
 
@@ -78,7 +81,7 @@ LINE_COMMENT "//"(.)*
 <BLOCK_COMMENT>"*/"         BEGIN INITIAL;
 <BLOCK_COMMENT>.            ;
 
-<INITIAL>[ \t\r\n]      	; /* skip whitespace which are not part of a string */
+<INITIAL>[ \t\r\n]+      	; /* skip whitespace which are not part of a string */
 <INITIAL>.                  return yytext[0];
 
 %%
