@@ -5,17 +5,17 @@
 // definitions with all the possible nodes
 #include "nodes.h"
 
-// includes needed for fure parser and location support
+// includes needed for pure parser and location support
 #include "y.tab.hpp"
 #include "lex.yy.h"
 
 
+extern int yylex(YYSTYPE *, YYLTYPE *);
+
 // flex has noyywrap option, but just for compatibility reasons, leave this prototype here
 int yywrap(void);
-
 // parser prototypes (with location support)
 void yyerror (YYLTYPE *, char const *);
-extern int yylex(YYSTYPE *, YYLTYPE *);
 
 // root node of the program
 INode *rootNode = NULL;
