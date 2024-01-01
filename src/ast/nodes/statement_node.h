@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#include "inode.h"
+
+
 class CStatementNode : public INode
 {
 	public:

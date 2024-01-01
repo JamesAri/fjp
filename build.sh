@@ -10,7 +10,7 @@ lex_file="../src/rules/lex.l"
 grammar_file="../src/rules/grammar.y"
 
 # gcc definitions
-gcc_files="-I ../src/nodes -I ../src/utils lex.yy.cpp y.tab.cpp ../src/main.cpp"
+gcc_files="-I ../src/ast -I ../src/utils y.tab.cpp lex.yy.cpp ../src/main.cpp"
 
 # -DYYDEBUG=1 for bison verbose messages
 gcc_flags="-std=c++11 -DYYDEBUG=1"

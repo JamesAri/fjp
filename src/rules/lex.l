@@ -1,8 +1,13 @@
 %{
+// definitions with all the possible nodes
 #include "ast_nodes.h"
 
 #include "y.tab.hpp"
-#include "../utils/location.h"
+
+// forward declaration of our utility functions (defined at the bottom)
+void save_value(YYSTYPE *);
+void save_indetifier(YYSTYPE *);
+static void update_loc(YYLTYPE *, char *);
 
 // updates the location of the token, so we can have meaningful error messages from parser
 #define YY_USER_ACTION update_loc(yylloc, yytext);
@@ -69,12 +74,12 @@ LINE_COMMENT "//"(.)*
 // VALUES TOKENS
 ////////////////
 %}
-<INITIAL>{INTEGER}      return INT;
-<INITIAL>{FLOAT}        return FLOAT;
-<INITIAL>(\'.\')        return CHAR;
-<INITIAL>"true"         return BOOL;
-<INITIAL>"false"        return BOOL;
-<INITIAL>{IDENTIFIER}   return IDENTIFIER;
+<INITIAL>{INTEGER}      save_value(yylval); return INT;
+<INITIAL>{FLOAT}        save_value(yylval); return FLOAT;
+<INITIAL>(\'.\')        save_value(yylval); return CHAR;
+<INITIAL>"true"         save_value(yylval); return BOOL;
+<INITIAL>"false"        save_value(yylval); return BOOL;
+<INITIAL>{IDENTIFIER}   save_indetifier(yylval); return IDENTIFIER;
 
 %{
 /////////////// 
@@ -90,3 +95,28 @@ LINE_COMMENT "//"(.)*
 <INITIAL>.                  return yytext[0];
 
 %%
+
+void save_value(YYSTYPE *yylval) 
+{
+	yylval->token_value.value = strdup(yytext);
+}
+
+void save_indetifier(YYSTYPE *yylval) 
+{
+	yylval->token_identifier.identifier = strdup(yytext);
+}
+
+void update_loc(YYLTYPE *loc, char *text)
+{
+	loc->first_line = loc->last_line;
+    loc->first_column = loc->last_column;
+    for(int i = 0; text[i] != '\0'; i++) {
+        if(text[i] == '\n') {
+            loc->last_line++;
+            loc->last_column = 0;
+        }
+        else {
+            loc->last_column++;
+        }
+    }
+}

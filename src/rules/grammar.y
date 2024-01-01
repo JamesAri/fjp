@@ -4,6 +4,8 @@
 
 // definitions with all the possible nodes
 #include "ast_nodes.h"
+// definitions with token structures
+#include "tokens.h"
 
 // includes needed for pure parser and location support
 #include "y.tab.hpp"
@@ -14,6 +16,7 @@ extern int yylex(YYSTYPE *, YYLTYPE *);
 
 // flex has noyywrap option, but just for compatibility reasons, leave this prototype here
 int yywrap(void);
+
 // parser prototypes (with location support)
 void yyerror (YYLTYPE *, char const *);
 
@@ -28,14 +31,19 @@ INode *rootNode = NULL;
 %define api.pure full
 
 %union {
-	CBlockNode* block_node;
-	CStatementNode* statement_node;
+	CBlockNode* 				block_node;
+	CStatementNode* 			statement_node;
+	CValueNode* 				value_node;
+
+	TTokenValue 				token_value;
+	TTokenIdentifier 			token_identifier;
 	
-	INode* node;
+	INode* 						node;
 }
 
 %type <block_node>			program statement_block
 %type <statement_node>		statement branch_body for_init_statement
+%type <value_node> 			value
 
 /* %destructor {
     if ($$ != NULL) 
@@ -49,45 +57,45 @@ INode *rootNode = NULL;
 /////////////
 // DATA TYPES
 /////////////
-%token <node> TYPE_INT
-%token <node> TYPE_CHAR
-%token <node> TYPE_BOOL
-%token <node> TYPE_VOID
+%token TYPE_INT
+%token TYPE_CHAR
+%token TYPE_BOOL
+%token TYPE_VOID
 
 /////////
 // BRANCH
 /////////
-%token <node> CONST
-%token <node> IF
-%token <node> ELSE
-%token <node> SWITCH
-%token <node> CASE
-%token <node> DEFAULT
-%token <node> FOR
-%token <node> DO
-%token <node> WHILE
-%token <node> BREAK
-%token <node> CONTINUE
-%token <node> RETURN
+%token CONST
+%token IF
+%token ELSE
+%token SWITCH
+%token CASE
+%token DEFAULT
+%token FOR
+%token DO
+%token WHILE
+%token BREAK
+%token CONTINUE
+%token RETURN
 
 ////////////
 // OPERATORS
 ////////////
-%token <node> LOGICAL_AND
-%token <node> LOGICAL_OR
-%token <node> EQUAL
-%token <node> NOT_EQUAL
-%token <node> GREATER_EQUAL
-%token <node> LESS_EQUAL
+%token LOGICAL_AND
+%token LOGICAL_OR
+%token EQUAL
+%token NOT_EQUAL
+%token GREATER_EQUAL
+%token LESS_EQUAL
 
 /////////
 // VALUES
 /////////
-%token <node> INT
-%token <node> FLOAT
-%token <node> CHAR
-%token <node> BOOL
-%token <node> IDENTIFIER
+%token <token_value> INT
+%token <token_value> FLOAT
+%token <token_value> CHAR
+%token <token_value> BOOL
+%token <token_identifier> IDENTIFIER
 
 //////////////
 // ASSOC/PREC
@@ -271,7 +279,7 @@ type:
     ;
 
 value:
-    INT													{}
+    INT													{$$ = new CValueNode($1);}
 	| FLOAT												{}
     | CHAR 												{}
     | BOOL 												{}

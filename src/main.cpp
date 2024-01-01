@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "definitions.h"
-#include "nodes/inode.h"
+#include "ast/inode.h"
 
 // Bison specific prototypes
 extern int yyparse();
