@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "utils/definitions.h"
+#include "definitions.h"
 #include "nodes/inode.h"
 
 // Bison specific prototypes

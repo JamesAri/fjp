@@ -2,27 +2,16 @@
 #include "nodes.h"
 
 #include "y.tab.hpp"
+#include "../utils/location.h"
 
 // updates the location of the token, so we can have meaningful error messages from parser
-#define YY_USER_ACTION \
-    yylloc->first_line = yylloc->last_line; \
-    yylloc->first_column = yylloc->last_column; \
-    for(int i = 0; yytext[i] != '\0'; i++) { \
-        if(yytext[i] == '\n') { \
-            yylloc->last_line++; \
-            yylloc->last_column = 0; \
-        } \
-        else { \
-            yylloc->last_column++; \
-        } \
-    }
+#define YY_USER_ACTION update_loc(yylloc, yytext);
 
 %}
 %option warn noyywrap
 %option bison-bridge bison-locations
 /* Creates file taht contains function prototypes, extern variables, and types used by the scanner */
 %option header-file="lex.yy.h"
-
 
 %s BLOCK_COMMENT
 

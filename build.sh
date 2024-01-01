@@ -10,27 +10,31 @@ lex_file="../src/rules/lex.l"
 grammar_file="../src/rules/grammar.y"
 
 # gcc definitions
-gcc_files="-I ../src/nodes ../src/main.cpp lex.yy.cpp y.tab.cpp"
+gcc_files="-I ../src/nodes -I ../src/utils lex.yy.cpp y.tab.cpp ../src/main.cpp"
 
 # -DYYDEBUG=1 for bison verbose messages
 gcc_flags="-std=c++11 -DYYDEBUG=1"
 
-win_build() {
-	echo "Windows build"
+common()
+{
 	# Bison
-	bison -d $grammar_file -o y.tab.cpp
+	bison -o y.tab.cpp -d $grammar_file 
 	# Flex
 	flex -o lex.yy.cpp $lex_file
+}
+
+win_build() 
+{
+	echo "Windows build"
+	common
 	# GCC
 	g++ $gcc_flags $gcc_files -o compiler.exe
 }
 
-osx_build() {
+osx_build() 
+{
 	echo "Mac OS X build"
-	# Bison
-	bison -d $grammar_file -o y.tab.cpp
-	# Flex
-	flex -o lex.yy.cpp $lex_file
+	common
 	# GCC
 	g++ $gcc_flags $gcc_files -o compiler -ll
 }
