@@ -1,19 +1,20 @@
 #ifndef __LOCATION_H__
 #define __LOCATION_H__
 
+// use forward declaration instead of importing from the build directory
 struct YYLTYPE;
 
-static void update_loc(YYLTYPE *yylloc, char *yytext)
+static void update_loc(YYLTYPE *loc, char *text)
 {
-	yylloc->first_line = yylloc->last_line;
-    yylloc->first_column = yylloc->last_column;
-    for(int i = 0; yytext[i] != '\0'; i++) {
-        if(yytext[i] == '\n') {
-            yylloc->last_line++;
-            yylloc->last_column = 0;
+	loc->first_line = loc->last_line;
+    loc->first_column = loc->last_column;
+    for(int i = 0; text[i] != '\0'; i++) {
+        if(text[i] == '\n') {
+            loc->last_line++;
+            loc->last_column = 0;
         }
         else {
-            yylloc->last_column++;
+            loc->last_column++;
         }
     }
 }

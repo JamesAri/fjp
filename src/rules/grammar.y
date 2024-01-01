@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 // definitions with all the possible nodes
-#include "nodes.h"
+#include "ast_nodes.h"
 
 // includes needed for pure parser and location support
 #include "y.tab.hpp"
