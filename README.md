@@ -1,4 +1,4 @@
-# KIV/FJP compiler
+# KIV/FJP compiler - making C-like clone
 
 Tools and requirements:
 - flex 2.6.4 Apple(flex-34)
