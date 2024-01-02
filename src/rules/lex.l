@@ -34,6 +34,7 @@ LINE_COMMENT "//"(.)*
 ////////////////////
 %}
 <INITIAL>"int"   return TYPE_INT;
+<INITIAL>"float"  return TYPE_FLOAT;
 <INITIAL>"char"  return TYPE_CHAR;
 <INITIAL>"bool"  return TYPE_BOOL;
 <INITIAL>"void"  return TYPE_VOID;

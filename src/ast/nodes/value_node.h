@@ -3,24 +3,26 @@
 
 #include <iostream>
 
-#include "inode.h"
+#include "expression_node.h"
 #include "tokens.h"
 
 
-class CValueNode : public INode
-{
+class CValue_Node : public CExpression_Node
+{	
+	private:
+		TToken_Value tokenValue;
+		
 	public:
-		TTokenValue tokenValue;
 
-		CValueNode(TTokenValue tokenValue)
+		CValue_Node(const TToken_Value &val, const EData_Type &type) 
+			: CExpression_Node(type, true), tokenValue(val)
 		{
-			std::cout << "CValueNode constructor" << std::endl;
-			this->tokenValue = tokenValue;
+			//
 		};
 
-		void Compile()
+		void Compile() override
 		{
-			// Do nothing
+			std::cout << "CValue_Node::Compile()" << std::endl;
 		};
 };
 

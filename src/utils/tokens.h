@@ -1,12 +1,12 @@
 #ifndef __TOKENS_H_
 #define __TOKENS_H_
 
-struct TTokenValue
+struct TToken_Value
 {
 	char *value;
 };
 
-struct TTokenIdentifier
+struct TToken_Identifier
 {
 	char *identifier;
 };

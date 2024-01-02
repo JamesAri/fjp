@@ -3,20 +3,25 @@
 
 #include <iostream>
 
-#include "inode.h"
+#include "types.h"
 
-class CTypeNode : public INode
+
+class CType_Node
 {
+	private:
+		EData_Type type;
+
 	public:
 
-		CTypeNode()
+
+		CType_Node(const EData_Type &type) : type(type)
 		{
-			std::cout << "CTypeNode constructor" << std::endl;
+			//
 		};
 
-		void Compile()
+		EData_Type Get_Type()
 		{
-			// Do nothing
+			return type;
 		};
 };
 

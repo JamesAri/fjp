@@ -3,22 +3,11 @@
 
 #include <iostream>
 
-#include "inode.h"
 
-
-class CStatementNode : public INode
+class CStatement_Node
 {
 	public:
-
-		CStatementNode()
-		{
-			std::cout << "CStatementNode constructor" << std::endl;
-		};
-
-		void Compile()
-		{
-			// Do nothing
-		};
+		virtual void Compile() = 0;
 };
 
 #endif // __STATEMENT_NODE_H_

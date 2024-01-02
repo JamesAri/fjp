@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "definitions.h"
-#include "ast/inode.h"
+#include "ast/nodes/block_node.h"
 
 // Bison specific prototypes
 extern int yyparse();
@@ -9,7 +9,7 @@ extern int yydebug;
 extern FILE* yyin;
 
 // Root node of the AST - created in scanner
-extern INode* rootNode;
+extern CBlock_Node* sRootNode;
 
 // Source file to be parsed
 std::string sourceFile;
@@ -63,6 +63,8 @@ int main(int argc, char* argv[])
 	yyparse();
 
 	fclose(yyin);
+
+	sRootNode->Compile();
 
 	return SUCCESS;
 }

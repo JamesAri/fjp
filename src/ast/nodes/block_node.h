@@ -1,25 +1,42 @@
 #ifndef __BLOCK_NODE_H_
 #define __BLOCK_NODE_H_
 
+#include <vector>
+
 #include "statement_node.h"
 
-class CBlockNode : public INode
-{
+typedef std::vector<CStatement_Node*> statement_list_t;
+
+class CBlock_Node : public CStatement_Node
+{	
+	private:
+		statement_list_t *statements;
+
 	public:
 
-		CBlockNode()
+		CBlock_Node() {};
+
+		CBlock_Node(statement_list_t *statements)
 		{
-			std::cout << "CBlockNode constructor" << std::endl;
+			this->statements = statements;
 		};
 
-		void AddStatement(CStatementNode *statement)
+		void Compile() override
 		{
-			// Do nothing
-		};
+			// for (int i = 0; i < statements->size(); ++i)
+			// {
+			// 	std::cout << "CBlock_Node::Compile()" << std::endl;
+			// 	std::cout << "statements->size() = " << statements->size() << std::endl;
+			// 	std::cout << "i = " << i << std::endl;
+			// 	(*statements)[i]->Compile();
+			// }
 
-		void Compile()
-		{
-			std::cout << "Compiling" << std::endl;
+			std::cout << "CBlock_Node::Compile()" << std::endl;
+			
+			for (statement_list_t::iterator it = statements->begin(); it != statements->end(); ++it)
+			{
+				(*it)->Compile();
+			}
 		};
 };
 

@@ -2,26 +2,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
+#include <vector>
+
 // definitions with all the possible nodes
 #include "ast_nodes.h"
 // definitions with token structures
 #include "tokens.h"
+// definitions with type structures
+#include "types.h"
 
 // includes needed for pure parser and location support
 #include "y.tab.hpp"
 #include "lex.yy.h"
 
+// reade more about yylex: https://www.ibm.com/docs/en/zos/2.1.0?topic=works-yyparse-yylex
+// forward declaration of yylex for compatibility reasons
+extern int yylex(YYSTYPE *, YYLTYPE *); 
 
-extern int yylex(YYSTYPE *, YYLTYPE *);
-
-// flex has noyywrap option, but just for compatibility reasons, leave this prototype here
+// flex has noyywrap option, but just to be sure, leave this prototype here (some bison versions need it)
 int yywrap(void);
 
 // parser prototypes (with location support)
 void yyerror (YYLTYPE *, char const *);
 
 // root node of the program
-INode *rootNode = NULL;
+CBlock_Node *sRootNode = nullptr;
+
 %}
 
 %locations
@@ -31,19 +38,51 @@ INode *rootNode = NULL;
 %define api.pure full
 
 %union {
-	CBlockNode* 				block_node;
-	CStatementNode* 			statement_node;
-	CValueNode* 				value_node;
+	CStatement_Node* 			statement_node;
 
-	TTokenValue 				token_value;
-	TTokenIdentifier 			token_identifier;
-	
-	INode* 						node;
+	CBlock_Node* 				block_node;
+	CExpression_Node* 			expression_node;
+	CDeclaration_Node* 			declaration_node;
+	CMulti_Declaration_Node* 	multi_declaration_node;
+
+	CType_Node* 				type_node;
+	CIdentifier_Node* 			identifier_node;
+	CValue_Node* 				value_node;
+
+	CFunction_Node* 			function_node;
+	CFunction_Call_Node* 		function_call_node;
+	CReturn_Node* 				return_node;
+
+	CIf_Node* 					if_node;
+
+	TToken_Value 				token_value;
+	TToken_Identifier 			token_identifier;
+
+	statement_list_t* 			statement_list;
+	parameter_list_t* 			parameter_list;
+	argument_list_t* 			argument_list;
 }
 
-%type <block_node>			program statement_block
-%type <statement_node>		statement branch_body for_init_statement
-%type <value_node> 			value
+%type <statement_node>			statement branch_body for_init_statement
+
+%type <block_node>				program statement_block
+%type <expression_node>			expression expression_value expression_operation
+%type <declaration_node>		single_declaration
+%type <multi_declaration_node>	multi_declaration
+
+%type <type_node>				type
+%type <identifier_node>			identifier
+%type <value_node> 				value
+
+%type <function_node>			function function_header
+%type <function_call_node>		function_call
+%type <return_node>				return_statement
+
+%type <if_node>					if_statement unmatched_if_statement matched_if_statement
+
+%type <statement_list>			statement_list
+%type <parameter_list>			parameter_list function_parameters
+%type <argument_list>			argument_list function_argmunets
 
 /* %destructor {
     if ($$ != NULL) 
@@ -58,6 +97,7 @@ INode *rootNode = NULL;
 // DATA TYPES
 /////////////
 %token TYPE_INT
+%token TYPE_FLOAT
 %token TYPE_CHAR
 %token TYPE_BOOL
 %token TYPE_VOID
@@ -118,58 +158,58 @@ INode *rootNode = NULL;
 // ROOT
 //////////
 program: 
-	/* e */									{$$ = NULL; rootNode = new CBlockNode();}
-    | statement_list						{$$ = NULL; rootNode = new CBlockNode();}
+	/* e */									{$$ = NULL; sRootNode = new CBlock_Node();}
+    | statement_list						{$$ = NULL; sRootNode = new CBlock_Node($1);}
     ;
 
 statement_list:
-    statement								{}
-    | statement_list statement				{}
-    | statement_block						{}
-    | statement_list statement_block		{}
+    statement								{$$ = new statement_list_t(); $$->push_back($1);}
+    | statement_list statement				{$$ = $1; $$->push_back($2);}
+    | statement_block						{$$ = new statement_list_t(); $$->push_back($1);}
+    | statement_list statement_block		{$$ = $1; $$->push_back($2);}
     ;
 
 statement_block:
-    '{' '}'									{}
-    | '{' statement_list '}'				{}
+    '{' '}'									{$$ = new CBlock_Node();}
+    | '{' statement_list '}'				{$$ = new CBlock_Node($2);}
     ;
 
 statement:
-    ';'										{}
-    | expression ';'						{}
-    | single_declaration ';'				{}
-    | multi_declaration ';'					{}
-    | if_statement							{}
+    ';'										{/*x*/}
+    | expression ';'						{/*x*/}
+    | single_declaration ';'				{$$ = $1;}
+    | multi_declaration ';'					{$$ = $1;}
+    | if_statement							{$$ = $1;}
     | switch_statement						{}
     | case_statement						{}
     | while_statement						{}
     | do_while_statement ';'				{}
     | for_statement							{}
-    | function								{}
+    | function								{$$ = $1;}
     | return_statement ';'					{}
-	| BREAK ';'								{}
-    | CONTINUE ';'							{}
+	| BREAK ';'								{/*x*/}
+    | CONTINUE ';'							{/*x*/}
     ;
 
 branch_body:
-    statement								{}
-    | statement_block						{}
+    statement								{$$ = $1;}
+    | statement_block						{$$ = $1;}
     ;
 
 /////////////// 
 // IF STATEMENT
 /////////////// 
 if_statement:
-    unmatched_if_statement					{}
-    | matched_if_statement					{}
+    unmatched_if_statement					{$$ = $1;}
+    | matched_if_statement					{$$ = $1;}
     ;
 
 unmatched_if_statement:     
-    IF '(' expression ')' branch_body %prec IF_UNMATCHED	{}
+    IF '(' expression ')' branch_body %prec IF_UNMATCHED	{$$ = new CIf_Node($3, $5);}
     ;
 
 matched_if_statement:
-    IF '(' expression ')' branch_body ELSE branch_body		{}
+    IF '(' expression ')' branch_body ELSE branch_body		{$$ = new CIf_Node($3, $5, $7);}
     ;
 
 /////////////// 
@@ -223,14 +263,14 @@ for_expression:
 // EXPRESSIONS
 //////////////
 expression:
-    expression_value									{}
-    | expression_operation								{}
+    expression_value									{/* Do noting*/}
+    | expression_operation								{/* Do noting*/}
     ;
 
 expression_value:
     '(' expression ')'									{}
-    | identifier												{}		
-    | value												{}		
+    | identifier										{$$ = $1;}
+    | value												{$$ = $1;}	
     | function_call										{}
     ;
 
@@ -258,77 +298,76 @@ expression_operation:
 // DECLARATIONS   
 ///////////////  
 single_declaration:
-    type identifier										{}
-    | CONST type identifier								{}
-    | type identifier '=' expression					{}
-    | CONST type identifier '=' expression				{}
+    type identifier										{$$ = new CDeclaration_Node($1, $2, false);}
+    | CONST type identifier								{$$ = new CDeclaration_Node($2, $3, true);}
+    | type identifier '=' expression					{$$ = new CDeclaration_Node($1, $2, false, $4);}
+    | CONST type identifier '=' expression				{$$ = new CDeclaration_Node($2, $3, true, $5);}
     ;
 
 multi_declaration:
-    single_declaration ',' identifier					{}
-    | single_declaration ',' identifier '=' expression	{}
-    | multi_declaration ',' identifier					{}
-    | multi_declaration ',' identifier '=' expression	{}
+    single_declaration ',' identifier					{$$ = new CMulti_Declaration_Node($1); $$->Add_Declaration($3);}
+    | single_declaration ',' identifier '=' expression	{$$ = new CMulti_Declaration_Node($1); $$->Add_Declaration($3, $5);}
+    | multi_declaration ',' identifier					{$$ = $1; $$->Add_Declaration($3);}
+    | multi_declaration ',' identifier '=' expression	{$$ = $1; $$->Add_Declaration($3, $5);}
     ;
 
 type:
-    TYPE_INT											{}
-    | TYPE_CHAR 										{}
-    | TYPE_BOOL 										{}
-    | TYPE_VOID 										{}
+    TYPE_INT											{$$ = new CType_Node(INT_TYPE);}
+	| TYPE_FLOAT										{$$ = new CType_Node(FLOAT_TYPE);}
+    | TYPE_CHAR 										{$$ = new CType_Node(CHAR_TYPE);}
+    | TYPE_BOOL 										{$$ = new CType_Node(BOOL_TYPE);}
+    | TYPE_VOID 										{$$ = new CType_Node(VOID_TYPE);}
     ;
 
 value:
-    INT													{$$ = new CValueNode($1);}
-	| FLOAT												{}
-    | CHAR 												{}
-    | BOOL 												{}
+    INT													{$$ = new CValue_Node($1, INT_TYPE); delete $1.value;}
+	| FLOAT												{$$ = new CValue_Node($1, FLOAT_TYPE); delete $1.value;}
+    | CHAR 												{$$ = new CValue_Node($1, CHAR_TYPE); delete $1.value;}
+    | BOOL 												{$$ = new CValue_Node($1, BOOL_TYPE); delete $1.value;}
     ;
 
 identifier:
-    IDENTIFIER											{}
+    IDENTIFIER											{$$ = new CIdentifier_Node($1, UNKOWN_TYPE, false); delete $1.identifier;}
     ;
 
 /////////////////
 // FUNCTION RULES
 /////////////////
 function:
-    function_header statement_block						{}
+    function_header statement_block						{$$ = $1; $$->Set_Body($2);}
     ;
 
 function_header:
-    type identifier '(' param_list ')'					{}
+    type identifier '(' function_parameters ')'			{$$ = new CFunction_Node($1, $2, $4);}
     ;
 
-param_list: 
-	/* e */												{}
-    | single_declaration								{}
-    | param_list_ext ',' single_declaration				{}
-    ;
+function_parameters:
+	/* e */												{$$ = new parameter_list_t();}
+	| parameter_list									{$$ = $1;}
+	;	
 
-param_list_ext:
-    single_declaration									{}
-    | param_list_ext ',' single_declaration				{}
+parameter_list: 										
+    single_declaration									{$$ = new parameter_list_t(); $$->push_back($1);}
+    | parameter_list ',' single_declaration				{$$ = $1; $$->push_back($3);}
     ;
 
 function_call:
-    identifier '(' arg_list ')'							{}
+    identifier '(' function_argmunets ')'				{$$ = new CFunction_Call_Node($1, $3);}
     ;
 
-arg_list: 
-	/* e */												{}
-    | expression										{}
-    | arg_list_ext ',' expression						{}
-    ;
+function_argmunets:
+	/* e */												{$$ = new argument_list_t();}
+	| argument_list										{$$ = $1;}
+	;	
 
-arg_list_ext:
-    expression											{}
-    | arg_list_ext ',' expression						{}
+argument_list: 
+    expression											{$$ = new argument_list_t(); $$->push_back($1);}
+    | argument_list ',' expression						{$$ = $1; $$->push_back($3);}
     ;
 
 return_statement:
-    RETURN expression									{}
-    | RETURN											{}
+    RETURN expression									{$$ = new CReturn_Node($2);}
+    | RETURN											{$$ = new CReturn_Node();}
     ;
 
 

@@ -15,6 +15,10 @@ gcc_files="-I ../src/ast -I ../src/utils y.tab.cpp lex.yy.cpp ../src/main.cpp"
 # -DYYDEBUG=1 for bison verbose messages
 gcc_flags="-std=c++11 -DYYDEBUG=1"
 
+if [ "$1" == "debug" ]; then
+    gcc_flags+=" -g -Wall"
+fi
+
 common()
 {
 	# Bison

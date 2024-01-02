@@ -3,21 +3,33 @@
 
 #include <iostream>
 
-#include "inode.h"
+#include "statement_node.h"
+#include "types.h"
 
 
-class CExpressionNode : public INode
+class CExpression_Node : public CStatement_Node
 {
+	private:
+		EData_Type type;
+		bool is_constant;
+
 	public:
 
-		CExpressionNode()
+		CExpression_Node() 
+			: type(EData_Type::UNKOWN_TYPE), is_constant(true)
 		{
-			std::cout << "CExpressionNode constructor" << std::endl;
+			//
 		};
 
-		void Compile()
+		CExpression_Node(const EData_Type &type, const bool is_constant) 
+			: type(type), is_constant(is_constant)
 		{
-			// Do nothing
+			//
+		};
+
+		void Compile() override
+		{
+			std::cout << "CExpression_Node::Compile()" << std::endl;
 		};
 };
 
