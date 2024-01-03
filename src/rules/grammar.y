@@ -11,6 +11,8 @@
 #include "tokens.h"
 // definitions with type structures
 #include "types.h"
+// pl0 definitions
+#include "pl0.h"
 
 // includes needed for pure parser and location support
 #include "y.tab.hpp"
@@ -29,6 +31,18 @@ void yyerror (YYLTYPE *, char const *);
 // root node of the program
 CBlock_Node *sRootNode = nullptr;
 
+// Create code storage and generator helpers
+code_t sCode;
+int sCurrent_Level = -1; // compiling block node increments level - global scope will be 0
+unsigned int sCode_Length = 0;
+unsigned int sCurrent_Block_Address = 0;
+
+// Create identifier table and initialize count
+identifier_table_t sIdentifier_Table;
+unsigned int sIdentifier_Count = 0;
+
+// Initialize global stack
+std::stack<int> sStack;
 %}
 
 %locations
@@ -186,7 +200,7 @@ statement:
     | do_while_statement ';'				{}
     | for_statement							{}
     | function								{$$ = $1;}
-    | return_statement ';'					{}
+    | return_statement ';'					{$$ = $1;}
 	| BREAK ';'								{/*x*/}
     | CONTINUE ';'							{/*x*/}
     ;
@@ -312,22 +326,22 @@ multi_declaration:
     ;
 
 type:
-    TYPE_INT											{$$ = new CType_Node(INT_TYPE);}
-	| TYPE_FLOAT										{$$ = new CType_Node(FLOAT_TYPE);}
-    | TYPE_CHAR 										{$$ = new CType_Node(CHAR_TYPE);}
-    | TYPE_BOOL 										{$$ = new CType_Node(BOOL_TYPE);}
-    | TYPE_VOID 										{$$ = new CType_Node(VOID_TYPE);}
+    TYPE_INT											{$$ = new CType_Node(EData_Type::INT_TYPE);}
+	| TYPE_FLOAT										{$$ = new CType_Node(EData_Type::FLOAT_TYPE);}
+    | TYPE_CHAR 										{$$ = new CType_Node(EData_Type::CHAR_TYPE);}
+    | TYPE_BOOL 										{$$ = new CType_Node(EData_Type::BOOL_TYPE);}
+    | TYPE_VOID 										{$$ = new CType_Node(EData_Type::VOID_TYPE);}
     ;
 
 value:
-    INT													{$$ = new CValue_Node($1, INT_TYPE); delete $1.value;}
-	| FLOAT												{$$ = new CValue_Node($1, FLOAT_TYPE); delete $1.value;}
-    | CHAR 												{$$ = new CValue_Node($1, CHAR_TYPE); delete $1.value;}
-    | BOOL 												{$$ = new CValue_Node($1, BOOL_TYPE); delete $1.value;}
+    INT													{$$ = new CValue_Node($1, EData_Type::INT_TYPE); delete $1.value;}
+	| FLOAT												{$$ = new CValue_Node($1, EData_Type::FLOAT_TYPE); delete $1.value;}
+    | CHAR 												{$$ = new CValue_Node($1, EData_Type::CHAR_TYPE); delete $1.value;}
+    | BOOL 												{$$ = new CValue_Node($1, EData_Type::BOOL_TYPE); delete $1.value;}
     ;
 
 identifier:
-    IDENTIFIER											{$$ = new CIdentifier_Node($1, UNKOWN_TYPE, false); delete $1.identifier;}
+    IDENTIFIER											{$$ = new CIdentifier_Node($1); delete $1.identifier;}
     ;
 
 /////////////////

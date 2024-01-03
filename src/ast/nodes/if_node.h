@@ -5,6 +5,9 @@
 
 #include "statement_node.h"
 
+#include "pl0.h"
+
+
 class CIf_Node : public CStatement_Node
 {
 	private:

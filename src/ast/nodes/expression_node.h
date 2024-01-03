@@ -6,10 +6,11 @@
 #include "statement_node.h"
 #include "types.h"
 
+#include "pl0.h"
 
 class CExpression_Node : public CStatement_Node
 {
-	private:
+	protected:
 		EData_Type type;
 		bool is_constant;
 

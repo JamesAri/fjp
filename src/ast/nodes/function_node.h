@@ -6,6 +6,9 @@
 #include "statement_node.h"
 #include "types.h"
 
+#include "pl0.h"
+
+
 typedef std::vector<CDeclaration_Node*> parameter_list_t;
 typedef std::vector<CExpression_Node*> argument_list_t;
 

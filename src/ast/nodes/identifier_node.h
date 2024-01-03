@@ -6,15 +6,18 @@
 #include "tokens.h"
 #include "types.h"
 
+#include "pl0.h"
+
+
 class CIdentifier_Node : public CExpression_Node
 {
 	private:
-		TToken_Identifier identifier;
+		std::string identifier;
 		
 	public:
 
-		CIdentifier_Node(const TToken_Identifier &val, const EData_Type &type, const bool &is_constant) 
-			: CExpression_Node(type, is_constant), identifier(val)
+		CIdentifier_Node(const TToken_Identifier &val) 
+			: identifier(val.identifier)
 		{
 			//
 		};
@@ -22,6 +25,11 @@ class CIdentifier_Node : public CExpression_Node
 		void Compile() override
 		{
 			std::cout << "CIdentifier_Node::Compile()" << std::endl;
+		};
+
+		std::string Get_Name()
+		{
+			return identifier;
 		};
 };
 

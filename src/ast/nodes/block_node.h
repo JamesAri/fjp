@@ -5,6 +5,8 @@
 
 #include "statement_node.h"
 
+#include "pl0.h"
+
 typedef std::vector<CStatement_Node*> statement_list_t;
 
 class CBlock_Node : public CStatement_Node
@@ -23,20 +25,14 @@ class CBlock_Node : public CStatement_Node
 
 		void Compile() override
 		{
-			// for (int i = 0; i < statements->size(); ++i)
-			// {
-			// 	std::cout << "CBlock_Node::Compile()" << std::endl;
-			// 	std::cout << "statements->size() = " << statements->size() << std::endl;
-			// 	std::cout << "i = " << i << std::endl;
-			// 	(*statements)[i]->Compile();
-			// }
-
 			std::cout << "CBlock_Node::Compile()" << std::endl;
 			
+			sCurrent_Level++;
 			for (statement_list_t::iterator it = statements->begin(); it != statements->end(); ++it)
 			{
 				(*it)->Compile();
 			}
+			sCurrent_Level--;
 		};
 };
 

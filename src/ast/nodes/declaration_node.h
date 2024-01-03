@@ -7,6 +7,8 @@
 #include "identifier_node.h"
 #include "type_node.h"
 
+#include "pl0.h"
+
 class CDeclaration_Node;
 
 typedef std::vector<CDeclaration_Node*> declaration_list_t;
@@ -47,6 +49,10 @@ class CDeclaration_Node : public CStatement_Node
 		void Compile() override
 		{
 			std::cout << "CDeclaration_Node::Compile()" << std::endl;
+			std::cout << "identifier: " << identifier->Get_Name() << std::endl;
+
+			add_identifier(identifier->Get_Name().c_str(), EIdentifier_Type::VARIABLE, type->Get_Type(), sCurrent_Block_Address, sCurrent_Level, is_constant);
+			sCurrent_Block_Address++;
 		};
 };
 
@@ -74,6 +80,7 @@ class CMulti_Declaration_Node : public CStatement_Node
 		void Compile() override
 		{
 			std::cout << "CMulti_Declaration_Node::Compile()" << std::endl;
+
 		};
 };
 

@@ -3,6 +3,8 @@
 #include "ast_nodes.h"
 
 #include "y.tab.hpp"
+#include "common.h"
+#include "types.h"
 
 // forward declaration of our utility functions (defined at the bottom)
 void save_value(YYSTYPE *);
@@ -104,6 +106,11 @@ void save_value(YYSTYPE *yylval)
 
 void save_indetifier(YYSTYPE *yylval) 
 {
+	if (strlen(yytext) > Max_Identifier_Length) {
+		fprintf(stderr, "ERROR: identifier '%s' is too long\n", yytext);
+		// TODO: should free memory before exiting
+		exit(EXIT_FAILURE); 
+	}
 	yylval->token_identifier.identifier = strdup(yytext);
 }
 

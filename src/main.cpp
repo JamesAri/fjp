@@ -1,7 +1,9 @@
 #include <iostream>
 
-#include "definitions.h"
+#include "common.h"
 #include "ast/nodes/block_node.h"
+
+#include "log.h"
 
 // Bison specific prototypes
 extern int yyparse();
@@ -27,7 +29,7 @@ void parse_argv(int argc, char* argv[])
 	if (argc < 2)
 	{
 		std::cout << "Usage: " << argv[0] << " <input file>" << std::endl;
-		exit(FAILURE);
+		exit(EXIT_FAILURE);
 	}
 
 	sourceFile = argv[1];
@@ -38,7 +40,7 @@ void parse_argv(int argc, char* argv[])
 	if (file == NULL)
 	{
 		std::cout << "File " << sourceFile << " does not exist." << std::endl;
-		exit(FAILURE);
+		exit(EXIT_FAILURE);
 	}
 	{
 		fclose(file);
@@ -66,5 +68,7 @@ int main(int argc, char* argv[])
 
 	sRootNode->Compile();
 
-	return SUCCESS;
+	print_identifier_table();
+
+	return EXIT_SUCCESS;
 }

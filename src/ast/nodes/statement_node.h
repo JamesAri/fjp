@@ -3,7 +3,6 @@
 
 #include <iostream>
 
-
 class CStatement_Node
 {
 	public:
