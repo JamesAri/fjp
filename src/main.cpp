@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 
 #include "common.h"
 #include "ast/nodes/block_node.h"
@@ -15,6 +16,8 @@ extern CBlock_Node* sRootNode;
 
 // Source file to be parsed
 std::string sourceFile;
+// Output file
+std::string outputFile = "out.pl0";
 
 // Enables bison debug messages
 void enable_bison_debug_messages()
@@ -53,7 +56,40 @@ void parse_argv(int argc, char* argv[])
 		{
 			enable_bison_debug_messages();
 		}
+		// -o flag to specify output file
+		else if (strcmp(argv[i], "-o") == 0)
+		{
+			if (i + 1 < argc)
+			{
+				outputFile = argv[i + 1];
+			}
+			else
+			{
+				std::cout << "Usage: " << argv[0] << " <input file> [-d] [-o <output file>]" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
 	}
+}
+
+// outputs the code to a file
+void output_code()
+{
+	std::ofstream file;
+	file.open(outputFile);
+
+	if (!file.is_open())
+	{
+		std::cout << "ERROR: invalid path " << outputFile << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	for (int i = 0; i < sCode_Length; i++)
+	{
+		file << Instruction_Symbol_Table[sCode[i][0]] << " " << sCode[i][1] << " " << sCode[i][2] << std::endl;
+	}
+
+	file.close();
 }
 
 int main(int argc, char* argv[])
@@ -69,6 +105,8 @@ int main(int argc, char* argv[])
 	sRootNode->Compile();
 
 	print_identifier_table();
+
+	output_code();
 
 	return EXIT_SUCCESS;
 }

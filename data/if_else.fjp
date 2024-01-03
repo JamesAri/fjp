@@ -1,4 +1,4 @@
-int a;
+int a, b = 3;
 
 int main()
 {

@@ -49,7 +49,7 @@ PST 0 0        na zasobnkku X, L, A -> na adresu (L, A) se ulozi X
 */
 
 typedef unsigned int instruction_t;
-typedef unsigned int param_t;
+typedef unsigned int operation_t;
 
 // Description of the extended PL/0 instruction set (help tab): https://home.zcu.cz/~lipka/fjp/pl0/ 
 namespace PL0
@@ -75,23 +75,23 @@ namespace PL0
 	constexpr instruction_t PLD = 18;
 	constexpr instruction_t PST = 19;
 
-	constexpr param_t NEG =  1;
-	constexpr param_t ADD =  2;
-	constexpr param_t SUB =  3;
-	constexpr param_t MUL =  4;
-	constexpr param_t DIV =  5;
-	constexpr param_t MOD =  6;
-	constexpr param_t ODD =  7;
-	constexpr param_t EQ  =  8;
-	constexpr param_t NE  =  9;
-	constexpr param_t LT  = 10;
-	constexpr param_t GE  = 11;
-	constexpr param_t GT  = 12;
-	constexpr param_t LE  = 13;
+	constexpr operation_t NEG =  1;
+	constexpr operation_t ADD =  2;
+	constexpr operation_t SUB =  3;
+	constexpr operation_t MUL =  4;
+	constexpr operation_t DIV =  5;
+	constexpr operation_t MOD =  6;
+	constexpr operation_t ODD =  7;
+	constexpr operation_t EQ  =  8;
+	constexpr operation_t NE  =  9;
+	constexpr operation_t LT  = 10;
+	constexpr operation_t GE  = 11;
+	constexpr operation_t GT  = 12;
+	constexpr operation_t LE  = 13;
 }
 
 
-constexpr unsigned int Number_Of_Instructions = 9;
+constexpr unsigned int Number_Of_Instructions = 20;
 
 constexpr unsigned int Max_Instruction_Symbol_Size = 3;
 
@@ -99,7 +99,7 @@ constexpr unsigned int Max_Instruction_Symbol_Size = 3;
 typedef char instruction_symbol_t[Max_Instruction_Symbol_Size + 1];
 
 constexpr instruction_symbol_t Instruction_Symbol_Table[Number_Of_Instructions] = 
-{"LIT", "OPR", "LOD", "STO", "CAL", "RET", "INT", "JMP", "JMC"};
+{"LIT", "OPR", "LOD", "STO", "CAL", "RET", "INT", "JMP", "JMC", "REA", "WRI", "OPF", "RTI", "ITR", "NEW", "DEL", "LDA", "STA", "PLD", "PST"};
 
 
 // CODE STORAGE
@@ -127,7 +127,7 @@ extern std::stack<int> sStack;
 
 
 // UTILITY FUNCTIONS
-inline void emit(const instruction_t instruction, const param_t param_1, const param_t param_2)
+inline void emit(const instruction_t instruction, const int param_1, const int param_2)
 {
 	sCode[sCode_Length][0] = instruction;
 	sCode[sCode_Length][1] = param_1;
@@ -189,42 +189,42 @@ inline void add_identifier(const char *name, const EIdentifier_Type type, EData_
 	sIdentifier_Count++;
 }
 
-inline void emit_LIT(const param_t value)
+inline void emit_LIT(const int value)
 {
 	emit(PL0::LIT, 0, value);
 }
 
-inline void emit_OPR(const param_t operation)
+inline void emit_OPR(const operation_t operation)
 {
 	emit(PL0::OPR, 0, operation);
 }
 
-inline void emit_LOD(const unsigned int level, const unsigned int address)
+inline void emit_LOD(const int level, const int address)
 {
 	emit(PL0::LOD, level, address);
 }
 
-inline void emit_STO(const unsigned int level, const unsigned int address)
+inline void emit_STO(const int level, const int address)
 {
 	emit(PL0::STO, level, address);
 }
 
-inline void emit_CAL(const unsigned int level, const unsigned int address)
+inline void emit_CAL(const int level, const int address)
 {
 	emit(PL0::CAL, level, address);
 }
 
-inline void emit_INT(const unsigned int value)
+inline void emit_INT(const int value)
 {
 	emit(PL0::INT, 0, value);
 }
 
-inline void emit_JMP(const unsigned int address)
+inline void emit_JMP(const int address)
 {
 	emit(PL0::JMP, 0, address);
 }
 
-inline void emit_JMC(const unsigned int address)
+inline void emit_JMC(const int address)
 {
 	emit(PL0::JMC, 0, address);
 }

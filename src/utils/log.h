@@ -56,7 +56,7 @@ inline void print_identifier_table()
 		<< data_type_to_string(sIdentifier_Table[i].data_type) << "\t\t" 
 		<< sIdentifier_Table[i].address << "\t" 
 		<< sIdentifier_Table[i].level << "\t" 
-		<< sIdentifier_Table[i].is_constant 
+		<< (sIdentifier_Table[i].is_constant  ? "true" : "false")
 		<< std::endl;
 	}
 	std::cout << std::endl;

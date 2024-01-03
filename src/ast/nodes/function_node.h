@@ -15,52 +15,53 @@ typedef std::vector<CExpression_Node*> argument_list_t;
 class CFunction_Node : public CStatement_Node
 {
 	private:
-		CType_Node *return_type;
-		CIdentifier_Node *identifier;
-		parameter_list_t *parameters;
+		CType_Node *mReturn_Type;
+		CIdentifier_Node *mIdentifier;
+		parameter_list_t *mParameters;
 
-		CBlock_Node *body;
+		CBlock_Node *mBody;
 	
 	public:
 
 		CFunction_Node(CType_Node *return_type, CIdentifier_Node *identifier, parameter_list_t *parameters)
-			: return_type(return_type), identifier(identifier), parameters(parameters), body(nullptr)
+			: mReturn_Type(return_type), mIdentifier(identifier), mParameters(parameters), mBody(nullptr)
 		{
 			//
 		};
 
 		void Set_Body(CBlock_Node *body)
 		{
-			this->body = body;
+			this->mBody = body;
 		};
 
 		EData_Type Get_Type()
 		{
-			return return_type->Get_Type();
+			return mReturn_Type->Get_Type();
 		};
 
 		void Compile() override
 		{	
 			std::cout << "CFunction_Node::Compile()" << std::endl;
 			
-			if (!body) return;
-			
-			body->Compile();
+			if (mBody)
+			{
+				mBody->Compile();
+			}
 		};
 };
 
 class CFunction_Call_Node : public CExpression_Node
 {
 	private:
-		CIdentifier_Node *identifier;
-		argument_list_t *arguments;
+		CIdentifier_Node *mIdentifier;
+		argument_list_t *mArguments;
 
 	public:
 
 		CFunction_Call_Node(CIdentifier_Node *identifier, argument_list_t *arguments)
 		{
-			this->identifier = identifier;
-			this->arguments = arguments;
+			this->mIdentifier = identifier;
+			this->mArguments = arguments;
 		};
 
 		void Compile() override
@@ -72,16 +73,16 @@ class CFunction_Call_Node : public CExpression_Node
 class CReturn_Node : public CStatement_Node
 {
 	private:
-		CExpression_Node *expression;
+		CExpression_Node *mExpression;
 
 	public:
 
-		CReturn_Node()
+		CReturn_Node() : mExpression(nullptr)
 		{
-			expression = new CExpression_Node(VOID_TYPE, true);
+			//
 		};
 
-		CReturn_Node(CExpression_Node *expression) : expression(expression)
+		CReturn_Node(CExpression_Node *expression) : mExpression(expression)
 		{
 			//
 		};
@@ -89,6 +90,11 @@ class CReturn_Node : public CStatement_Node
 		void Compile() override
 		{
 			std::cout << "CReturn_Node::Compile()" << std::endl;
+
+			if (mExpression)
+			{
+				mExpression->Compile();
+			}
 		};
 };
 

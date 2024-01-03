@@ -12,7 +12,7 @@ typedef std::vector<CStatement_Node*> statement_list_t;
 class CBlock_Node : public CStatement_Node
 {	
 	private:
-		statement_list_t *statements;
+		statement_list_t *mStatements;
 
 	public:
 
@@ -20,7 +20,7 @@ class CBlock_Node : public CStatement_Node
 
 		CBlock_Node(statement_list_t *statements)
 		{
-			this->statements = statements;
+			this->mStatements = statements;
 		};
 
 		void Compile() override
@@ -28,7 +28,7 @@ class CBlock_Node : public CStatement_Node
 			std::cout << "CBlock_Node::Compile()" << std::endl;
 			
 			sCurrent_Level++;
-			for (statement_list_t::iterator it = statements->begin(); it != statements->end(); ++it)
+			for (statement_list_t::iterator it = mStatements->begin(); it != mStatements->end(); ++it)
 			{
 				(*it)->Compile();
 			}

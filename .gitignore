@@ -1,6 +1,10 @@
 # ignore build dir
 build/
 
+# ignore executables
+*.pl0
+*.tab
+
 .vscode/*
 # !.vscode/settings.json
 !.vscode/tasks.json

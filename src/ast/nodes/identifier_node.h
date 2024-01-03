@@ -12,12 +12,12 @@
 class CIdentifier_Node : public CExpression_Node
 {
 	private:
-		std::string identifier;
+		std::string mIdentifier;
 		
 	public:
 
 		CIdentifier_Node(const TToken_Identifier &val) 
-			: identifier(val.identifier)
+			: mIdentifier(val.identifier)
 		{
 			//
 		};
@@ -29,7 +29,7 @@ class CIdentifier_Node : public CExpression_Node
 
 		std::string Get_Name()
 		{
-			return identifier;
+			return mIdentifier;
 		};
 };
 

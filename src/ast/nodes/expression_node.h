@@ -11,27 +11,26 @@
 class CExpression_Node : public CStatement_Node
 {
 	protected:
-		EData_Type type;
-		bool is_constant;
+		EData_Type mType;
+		bool mIs_Constant;
 
 	public:
 
-		CExpression_Node() 
-			: type(EData_Type::UNKOWN_TYPE), is_constant(true)
+		CExpression_Node()
+			: mType(EData_Type::UNKOWN_TYPE), mIs_Constant(true)
 		{
 			//
 		};
 
 		CExpression_Node(const EData_Type &type, const bool is_constant) 
-			: type(type), is_constant(is_constant)
+			: mType(type), mIs_Constant(is_constant)
 		{
 			//
 		};
 
-		void Compile() override
-		{
-			std::cout << "CExpression_Node::Compile()" << std::endl;
-		};
+		virtual ~CExpression_Node() = default;
+
+		virtual void Compile() override = 0;
 };
 
 #endif // __EXPRESSION_NODE_H_

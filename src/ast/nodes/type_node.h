@@ -9,19 +9,19 @@
 class CType_Node
 {
 	private:
-		EData_Type type;
+		EData_Type mType;
 
 	public:
 
 
-		CType_Node(const EData_Type &type) : type(type)
+		CType_Node(const EData_Type &type) : mType(type)
 		{
 			//
 		};
 
 		EData_Type Get_Type()
 		{
-			return type;
+			return mType;
 		};
 };
 

@@ -52,10 +52,12 @@ std::stack<int> sStack;
 %define api.pure full
 
 %union {
+	// Abstract nodes
 	CStatement_Node* 			statement_node;
-
-	CBlock_Node* 				block_node;
 	CExpression_Node* 			expression_node;
+
+	// AST nodes
+	CBlock_Node* 				block_node;
 	CDeclaration_Node* 			declaration_node;
 	CMulti_Declaration_Node* 	multi_declaration_node;
 
@@ -69,18 +71,20 @@ std::stack<int> sStack;
 
 	CIf_Node* 					if_node;
 
+	// Token containers
 	TToken_Value 				token_value;
 	TToken_Identifier 			token_identifier;
 
+	// Lists
 	statement_list_t* 			statement_list;
 	parameter_list_t* 			parameter_list;
 	argument_list_t* 			argument_list;
 }
 
 %type <statement_node>			statement branch_body for_init_statement
+%type <expression_node>			expression expression_value expression_operation
 
 %type <block_node>				program statement_block
-%type <expression_node>			expression expression_value expression_operation
 %type <declaration_node>		single_declaration
 %type <multi_declaration_node>	multi_declaration
 

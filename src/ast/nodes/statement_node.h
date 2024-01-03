@@ -7,6 +7,7 @@ class CStatement_Node
 {
 	public:
 		virtual void Compile() = 0;
+		virtual ~CStatement_Node() = default;
 };
 
 #endif // __STATEMENT_NODE_H_
