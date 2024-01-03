@@ -24,16 +24,38 @@ class CBlock_Node : public CStatement_Node
 			this->mStatement_List = statements;
 		};
 
+		void Compile_Init()
+		{
+			std::cout << "CBlock_Node::Compile_Init()" << std::endl;
+
+			sCurrent_Level = 0;
+			sCode_Length = 0;
+			sCurrent_Block_Address = 3;
+
+			// for PL/0 control structures
+			emit_INT(sCurrent_Block_Address);
+
+			this->Compile();
+
+			// Generete JMP at the beginning of the code
+			// emit_JMP(0);
+
+			// this->Compile();
+
+			// Overwrite JMP with correct address
+			// TCode_Entry_Value jmp_address;
+			// jmp_address.i = -1;
+			// sCode[0].param_2 = jmp_address;
+		};
+
 		void Compile() override
 		{
 			std::cout << "CBlock_Node::Compile()" << std::endl;
 			
-			sCurrent_Level++;
 			for (statement_list_t::iterator it = mStatement_List->begin(); it != mStatement_List->end(); ++it)
 			{
 				(*it)->Compile();
 			}
-			sCurrent_Level--;
 		};
 };
 

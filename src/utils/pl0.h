@@ -9,8 +9,8 @@
 /*
 Basic ISA for PL/0
 
-lit 0,A    		ulož konstantu A do zásobníku
-opr 0,A    		proveď instrukci A z tabulky níže (vysledek na vrcholu zásobníku)
+LIT 0,A    		ulož konstantu A do zásobníku
+OPR 0,A    		proveď instrukci A z tabulky níže (vysledek na vrcholu zásobníku)
 1    unární minus
 2    +
 3    -
@@ -24,13 +24,13 @@ opr 0,A    		proveď instrukci A z tabulky níže (vysledek na vrcholu zásobní
 11    >=
 12    >
 13    <=
-lod L,A    		ulož hodnotu proměnné z adr. L,A na vrchol zásobníku
-sto L,A    		zapiš do proměnné z adr. L,A hodnotu z vrcholu zásobníku
-cal L,A    		volej proceduru A z úrovně L
-int 0,A   		zvyš obsah top-registru zásobníku o hodnotu A
-jmp 0,A    		proveď skok na adresu A
-jmc 0,A    		proveď skok na adresu A, je-li hodnota na vrcholu zásobníku 0
-ret 0,0    		návrat z procedury (return)
+LOD L,A    		ulož hodnotu proměnné z adr. L,A na vrchol zásobníku
+STO L,A    		zapiš do proměnné z adr. L,A hodnotu z vrcholu zásobníku
+CAL L,A    		volej proceduru A z úrovně L
+INT 0,A   		zvyš obsah top-registru zásobníku o hodnotu A
+JMP 0,A    		proveď skok na adresu A
+JMC 0,A    		proveď skok na adresu A, je-li hodnota na vrcholu zásobníku 0
+RET 0,0    		návrat z procedury (return)
 
 Extension:
 
@@ -120,7 +120,6 @@ struct TCode_Entry
 constexpr unsigned int Max_Code_Length = 10000;
 typedef TCode_Entry code_t[Max_Code_Length];
 
-
 extern code_t sCode;
 extern int sCurrent_Level;
 extern unsigned int sCode_Length;
@@ -145,7 +144,8 @@ inline int find_identifier(const char *name, const unsigned int level = 0)
 {
 	// we want the most recent identifier
 	for (int i = sIdentifier_Count - 1; i >= 0; i--)
-	{
+	{	
+		// if identifier is in scope level above, return FAILURE
 		if (sIdentifier_Table[i].level < level)
 		{
 			return FAILURE;
@@ -167,7 +167,7 @@ inline void add_identifier(const char *name, const EIdentifier_Type type, EData_
 		exit(EXIT_FAILURE);
 	}
 
-	if (find_identifier(name) != FAILURE)
+	if (find_identifier(name, level) != FAILURE)
 	{
 		std::cout << "ERROR: Identifier already exists" << std::endl;
 		exit(EXIT_FAILURE);

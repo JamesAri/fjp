@@ -39,11 +39,27 @@ class CFunction_Node : public CStatement_Node
 		void Compile() override
 		{	
 			std::cout << "CFunction_Node::Compile()" << std::endl;
-			
-			if (mBody_Block_Node)
+
+			if (!mBody_Block_Node)
 			{
-				mBody_Block_Node->Compile();
+				std::cout << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
+				exit(EXIT_FAILURE);
 			}
+			
+			sCurrent_Level++;
+
+			sStack.push(sCurrent_Block_Address);
+			
+			sCurrent_Block_Address = 3;
+			// for PL/0 control structures
+			emit_INT(sCurrent_Block_Address);
+
+			mBody_Block_Node->Compile();
+
+			sCurrent_Block_Address = sStack.top();
+			sStack.pop();
+			
+			sCurrent_Level--;
 		};
 };
 

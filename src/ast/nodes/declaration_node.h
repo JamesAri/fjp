@@ -12,7 +12,11 @@
 
 class CDeclaration_Node;
 
-typedef std::vector<CDeclaration_Node*> declaration_list_t;
+namespace
+{
+	typedef std::vector<CDeclaration_Node*> declaration_list_t;
+}
+
 
 class CDeclaration_Node : public CStatement_Node
 {
@@ -53,20 +57,30 @@ class CDeclaration_Node : public CStatement_Node
 		{
 			std::cout << "CDeclaration_Node::Compile()" << std::endl;
 
+			const int address = sCurrent_Block_Address;
+			const int level = sCurrent_Level;
+
 			add_identifier(
 				mIdentifier_Node->mIdentifier.c_str(), 
 				EIdentifier_Type::VARIABLE, 
 				mType_Node->mData_Type, 
-				sCurrent_Block_Address, 
-				sCurrent_Level, 
+				address, 
+				level, 
 				mIs_Constant
 			);
 
 			sCurrent_Block_Address++;
 
+			// increment stack pointer by 1 => variable will have random value that was
+			// previsouly on the stack, but if expression was provided, we will overwrite it
+			// in the next step
+			emit_INT(1);
+
 			if (mExpression_Node)
 			{
 				mExpression_Node->Compile();
+				// level must be relative (note for Mira: precti si prednasku o generovani kodu)
+				emit_STO(sCurrent_Level - level, address);
 			}
 		};
 };

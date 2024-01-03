@@ -33,9 +33,10 @@ CBlock_Node *sRootNode = nullptr;
 
 // Create code storage and generator helpers
 code_t sCode;
-int sCurrent_Level = -1; // compiling block node increments level - global scope will be 0
-unsigned int sCode_Length = 0;
-unsigned int sCurrent_Block_Address = 0;
+// Will be correctly initialized with Compile_Init from root node
+int sCurrent_Level;
+unsigned int sCode_Length;
+unsigned int sCurrent_Block_Address;
 
 // Create identifier table and initialize count
 identifier_table_t sIdentifier_Table;

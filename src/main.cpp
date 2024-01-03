@@ -102,15 +102,21 @@ int main(int argc, char* argv[])
 	
 	yyin = fopen(sourceFile.c_str(), "r");
 
-	yyparse();
+	int res = yyparse();
 
 	fclose(yyin);
 
-	sRootNode->Compile();
+	if(res != 0)
+	{
+		std::cout << "ERROR: Parsing failed" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	sRootNode->Compile_Init();
+	
+	output_code();
 
 	print_identifier_table();
-
-	output_code();
 
 	return EXIT_SUCCESS;
 }
