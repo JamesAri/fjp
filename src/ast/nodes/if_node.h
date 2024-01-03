@@ -11,14 +11,15 @@
 class CIf_Node : public CStatement_Node
 {
 	private:
-		CExpression_Node *mCondition;
-		CStatement_Node *mIf_Statement;
-		CStatement_Node *mElse_Statement;
+
+		CExpression_Node *mCondition_Node;
+		CStatement_Node *mIf_Statement_Node;
+		CStatement_Node *mElse_Statement_Node;
 
 	public:
 
 		CIf_Node(CExpression_Node *condition, CStatement_Node *if_statement, CStatement_Node *else_statement = nullptr)
-			: mCondition(condition), mIf_Statement(if_statement), mElse_Statement(else_statement)
+			: mCondition_Node(condition), mIf_Statement_Node(if_statement), mElse_Statement_Node(else_statement)
 		{
 			//
 		};
@@ -26,8 +27,8 @@ class CIf_Node : public CStatement_Node
 		void Compile() override
 		{	
 			std::cout << "CIf_Node::Compile()" << std::endl;
-			mIf_Statement->Compile();
-			if (mElse_Statement) mElse_Statement->Compile();
+			mIf_Statement_Node->Compile();
+			if (mElse_Statement_Node) mElse_Statement_Node->Compile();
 		};
 };
 

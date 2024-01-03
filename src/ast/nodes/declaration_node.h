@@ -17,29 +17,31 @@ typedef std::vector<CDeclaration_Node*> declaration_list_t;
 class CDeclaration_Node : public CStatement_Node
 {
 	private:
-		CType_Node *mType;
+		
+		CType_Node *mType_Node;
+		CIdentifier_Node *mIdentifier_Node;
 		bool mIs_Constant;
 		
-		CIdentifier_Node *mIdentifier;
 		// nullptr when declaration is without definition
-		CExpression_Node *mExpression;
+		CExpression_Node *mExpression_Node;
+
 	public:
 
 		CDeclaration_Node(CType_Node *type, CIdentifier_Node *identifier, const bool is_constant, CExpression_Node *expression = nullptr)
-			: mIs_Constant(is_constant), mExpression(expression)
+			: mIs_Constant(is_constant), mExpression_Node(expression)
 		{
-			this->mType = type;
-			this->mIdentifier = identifier;
+			this->mType_Node = type;
+			this->mIdentifier_Node = identifier;
 		};
 
 		void Set_Expression(CExpression_Node *expression)
 		{
-			this->mExpression = expression;
+			this->mExpression_Node = expression;
 		};
 
 		EData_Type Get_Type()
 		{
-			return mType->Get_Type();
+			return mType_Node->mData_Type;
 		};
 
 		bool Is_Constant()
@@ -51,12 +53,20 @@ class CDeclaration_Node : public CStatement_Node
 		{
 			std::cout << "CDeclaration_Node::Compile()" << std::endl;
 
-			add_identifier(mIdentifier->Get_Name().c_str(), EIdentifier_Type::VARIABLE, mType->Get_Type(), sCurrent_Block_Address, sCurrent_Level, mIs_Constant);
+			add_identifier(
+				mIdentifier_Node->mIdentifier.c_str(), 
+				EIdentifier_Type::VARIABLE, 
+				mType_Node->mData_Type, 
+				sCurrent_Block_Address, 
+				sCurrent_Level, 
+				mIs_Constant
+			);
+
 			sCurrent_Block_Address++;
 
-			if (mExpression)
+			if (mExpression_Node)
 			{
-				mExpression->Compile();
+				mExpression_Node->Compile();
 			}
 		};
 };
@@ -64,7 +74,8 @@ class CDeclaration_Node : public CStatement_Node
 class CMulti_Declaration_Node : public CStatement_Node
 {
 	private:
-		EData_Type mType;
+		
+		EData_Type mData_Type;
 		declaration_list_t mDeclarations;
 		bool mAre_Constants;
 
@@ -72,14 +83,14 @@ class CMulti_Declaration_Node : public CStatement_Node
 
 		// we retreive the type and constness information from the first declaration
 		CMulti_Declaration_Node(CDeclaration_Node *declaration)
-			: mType(declaration->Get_Type()), mAre_Constants(declaration->Is_Constant())
+			: mData_Type(declaration->Get_Type()), mAre_Constants(declaration->Is_Constant())
 		{
 			mDeclarations.push_back(declaration);
 		};
 
 		void Add_Declaration(CIdentifier_Node *identifier, CExpression_Node *expression = nullptr)
 		{	
-			CDeclaration_Node *decl = new CDeclaration_Node(new CType_Node(mType), identifier, mAre_Constants, expression);
+			CDeclaration_Node *decl = new CDeclaration_Node(new CType_Node(mData_Type), identifier, mAre_Constants, expression);
 			mDeclarations.push_back(decl);
 		};
 

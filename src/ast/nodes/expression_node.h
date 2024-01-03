@@ -11,19 +11,20 @@
 class CExpression_Node : public CStatement_Node
 {
 	protected:
-		EData_Type mType;
+
+		EData_Type mData_Type;
 		bool mIs_Constant;
 
 	public:
 
 		CExpression_Node()
-			: mType(EData_Type::UNKOWN_TYPE), mIs_Constant(true)
+			: mData_Type(EData_Type::UNKOWN_TYPE), mIs_Constant(true)
 		{
 			//
 		};
 
 		CExpression_Node(const EData_Type &type, const bool is_constant) 
-			: mType(type), mIs_Constant(is_constant)
+			: mData_Type(type), mIs_Constant(is_constant)
 		{
 			//
 		};

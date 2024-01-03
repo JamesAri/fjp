@@ -86,7 +86,11 @@ void output_code()
 
 	for (int i = 0; i < sCode_Length; i++)
 	{
-		file << Instruction_Symbol_Table[sCode[i][0]] << " " << sCode[i][1] << " " << sCode[i][2] << std::endl;
+		const TCode_Entry entry = sCode[i];
+		const std::string instruction_symbol = Instruction_Symbol_Table[entry.instruction];
+		const int param1 = entry.param_1;
+		auto param2 =  entry.is_float ? entry.param_2.f : entry.param_2.i;
+		file << instruction_symbol << " " << param1 << " " << param2 << std::endl;
 	}
 
 	file.close();

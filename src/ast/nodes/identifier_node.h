@@ -11,10 +11,9 @@
 
 class CIdentifier_Node : public CExpression_Node
 {
-	private:
-		std::string mIdentifier;
-		
 	public:
+
+		const std::string mIdentifier;
 
 		CIdentifier_Node(const TToken_Identifier &val) 
 			: mIdentifier(val.identifier)
@@ -25,11 +24,6 @@ class CIdentifier_Node : public CExpression_Node
 		void Compile() override
 		{
 			std::cout << "CIdentifier_Node::Compile()" << std::endl;
-		};
-
-		std::string Get_Name()
-		{
-			return mIdentifier;
 		};
 };
 

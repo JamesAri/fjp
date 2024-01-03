@@ -48,7 +48,7 @@ PST 0 0        na zasobnkku X, L, A -> na adresu (L, A) se ulozi X
 
 */
 
-typedef unsigned int instruction_t;
+typedef unsigned char instruction_t;
 typedef unsigned int operation_t;
 
 // Description of the extended PL/0 instruction set (help tab): https://home.zcu.cz/~lipka/fjp/pl0/ 
@@ -103,9 +103,23 @@ constexpr instruction_symbol_t Instruction_Symbol_Table[Number_Of_Instructions] 
 
 
 // CODE STORAGE
-constexpr unsigned int Max_Code_Length = 10000;
+union TCode_Entry_Value
+{
+	int i;
+	float f;
+};
 
-typedef int code_t[Max_Code_Length][3]; // <instruction> <param_1> <param_2>
+struct TCode_Entry
+{
+	instruction_t instruction;
+	int param_1;				// is always integer
+	TCode_Entry_Value param_2;
+	bool is_float;
+};
+
+constexpr unsigned int Max_Code_Length = 10000;
+typedef TCode_Entry code_t[Max_Code_Length];
+
 
 extern code_t sCode;
 extern int sCurrent_Level;
@@ -127,14 +141,6 @@ extern std::stack<int> sStack;
 
 
 // UTILITY FUNCTIONS
-inline void emit(const instruction_t instruction, const int param_1, const int param_2)
-{
-	sCode[sCode_Length][0] = instruction;
-	sCode[sCode_Length][1] = param_1;
-	sCode[sCode_Length][2] = param_2;
-	sCode_Length++;
-}
-
 inline int find_identifier(const char *name, const unsigned int level = 0)
 {
 	// we want the most recent identifier
@@ -189,14 +195,42 @@ inline void add_identifier(const char *name, const EIdentifier_Type type, EData_
 	sIdentifier_Count++;
 }
 
+inline void emit(const instruction_t instruction, const int param_1, const TCode_Entry_Value param_2, const bool is_float)
+{
+	sCode[sCode_Length].instruction = instruction;
+	sCode[sCode_Length].param_1 = param_1;
+	sCode[sCode_Length].param_2 = param_2;
+	sCode[sCode_Length].is_float = is_float;
+	sCode_Length++;
+}
+
+inline void emit(const instruction_t instruction, const int param_1, const int param_2)
+{
+	TCode_Entry_Value value;
+	value.i = param_2;
+	emit(instruction, param_1, value, false);
+}
+
+inline void emit(const instruction_t instruction, const int param_1, const float param_2)
+{
+	TCode_Entry_Value value;
+	value.f = param_2;
+	emit(instruction, param_1, value, true);
+}
+
 inline void emit_LIT(const int value)
+{
+	emit(PL0::LIT, 0, value);
+}
+
+inline void emit_LIT(const float value)
 {
 	emit(PL0::LIT, 0, value);
 }
 
 inline void emit_OPR(const operation_t operation)
 {
-	emit(PL0::OPR, 0, operation);
+	emit(PL0::OPR, 0, static_cast<int>(operation));
 }
 
 inline void emit_LOD(const int level, const int address)
