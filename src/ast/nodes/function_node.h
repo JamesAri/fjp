@@ -45,12 +45,28 @@ class CFunction_Node : public CStatement_Node
 				std::cout << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
 				exit(EXIT_FAILURE);
 			}
+
+
+			// Push address of the JMP instruction below
+			sStack.push(sCode_Length); 
+			// To be overwritten later
+			emit_JMP(0);
+
+			add_identifier(
+				mIdentifier_Node->mIdentifier.c_str(), 
+				EIdentifier_Type::PROCEDURE, 
+				mReturn_Type_Node->mData_Type, 
+				sCode_Length, // this now points after the JMP instruction above
+				sCurrent_Level, 
+				false // we do not allow constant procedures
+			);
 			
 			sCurrent_Level++;
 
 			sStack.push(sCurrent_Block_Address);
 			
 			sCurrent_Block_Address = 3;
+
 			// for PL/0 control structures
 			emit_INT(sCurrent_Block_Address);
 
@@ -60,6 +76,15 @@ class CFunction_Node : public CStatement_Node
 			sStack.pop();
 			
 			sCurrent_Level--;
+			
+			// Pop address of the JMP instruction saved earlier
+			int jmp_instruction_address = sStack.top();
+			sStack.pop();
+
+			// Overwrite JMP with correct address (after the fn definition)
+			TCode_Entry_Value jmp_address;
+			jmp_address.i = sCode_Length;
+			sCode[jmp_instruction_address].param_2 = jmp_address;
 		};
 };
 

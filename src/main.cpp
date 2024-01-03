@@ -90,7 +90,7 @@ void output_code()
 		const std::string instruction_symbol = Instruction_Symbol_Table[entry.instruction];
 		const int param1 = entry.param_1;
 		auto param2 =  entry.is_float ? entry.param_2.f : entry.param_2.i;
-		file << instruction_symbol << " " << param1 << " " << param2 << std::endl;
+		file << i << " " << instruction_symbol << " " << param1 << " " << param2 << std::endl;
 	}
 
 	file.close();

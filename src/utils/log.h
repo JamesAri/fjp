@@ -2,6 +2,8 @@
 #define __LOG_H_
 
 #include <iostream>
+#include <iomanip>
+
 
 #include "pl0.h"
 
@@ -46,17 +48,17 @@ inline void print_identifier_table()
 {
 	std::cout << "\nIdentifier Table:" << std::endl;
 	std::cout << "-----------------" << std::endl;
-	std::cout << "Name\tType\tData type\tAddress\tLevel\tConstant" << std::endl;
-	std::cout << "----\t----\t---------\t-------\t-----\t--------" << std::endl;
+	std::cout << std::left << std::setw(15) << "Name" << std::left << std::setw(15) << "Type" << std::left << std::setw(15) << "Data type" << std::left << std::setw(15) << "Address" << std::left << std::setw(15) << "Level" << std::left << std::setw(15) << "Constant" << std::endl;
+	std::cout << std::left << std::setw(15) << "----" << std::left << std::setw(15) << "----" << std::left << std::setw(15) << "---------" << std::left << std::setw(15) << "-------" << std::left << std::setw(15) << "-----" << std::left << std::setw(15) << "--------" << std::endl;
 	for (int i = 0; i < sIdentifier_Count; i++)
 	{
 		std::cout 
-		<< sIdentifier_Table[i].name << "\t" 
-		<< identifier_type_to_string(sIdentifier_Table[i].type) << "\t" 
-		<< data_type_to_string(sIdentifier_Table[i].data_type) << "\t\t" 
-		<< sIdentifier_Table[i].address << "\t" 
-		<< sIdentifier_Table[i].level << "\t" 
-		<< (sIdentifier_Table[i].is_constant  ? "true" : "false")
+		<< std::left << std::setw(15) << sIdentifier_Table[i].name
+		<< std::left << std::setw(15) << identifier_type_to_string(sIdentifier_Table[i].type)
+		<< std::left << std::setw(15) << data_type_to_string(sIdentifier_Table[i].data_type)
+		<< std::left << std::setw(15) << sIdentifier_Table[i].address
+		<< std::left << std::setw(15) << sIdentifier_Table[i].level
+		<< std::left << std::setw(15) << (sIdentifier_Table[i].is_constant ? "true" : "false")
 		<< std::endl;
 	}
 	std::cout << std::endl;
