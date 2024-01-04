@@ -117,6 +117,7 @@ class CReturn_Node : public CStatement_Node
 			if (mExpression_Node)
 			{
 				mExpression_Node->Compile();
+				emit_RET();
 			}
 		};
 };

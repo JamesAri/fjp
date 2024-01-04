@@ -39,15 +39,8 @@ class CBlock_Node : public CStatement_Node
 
 			this->Compile();
 
-			// Generete JMP at the beginning of the code
-			// emit_JMP(0);
-
-			// this->Compile();
-
-			// Overwrite JMP with correct address
-			// TCode_Entry_Value jmp_address;
-			// jmp_address.i = -1;
-			// sCode[0].param_2 = jmp_address;
+			// terminate program
+			emit_RET();
 		};
 
 		void Compile() override
