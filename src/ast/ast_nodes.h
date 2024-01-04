@@ -10,5 +10,6 @@
 #include "nodes/identifier_node.h"
 #include "nodes/function_node.h"
 #include "nodes/if_node.h"
+#include "nodes/assignment_node.h"
 
 #endif // __NODES_H_

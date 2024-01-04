@@ -73,17 +73,23 @@ class CDeclaration_Node : public CStatement_Node
 
 			sCurrent_Block_Address++;
 
-			// increment stack pointer by 1 => variable will have random value that was
-			// previsouly on the stack, but if expression was provided, we will overwrite it
-			// in the next step
+			// increment stack pointer by 1 (allocate space for the variable)
 			emit_INT(1); // NOTE: this might change with the introduction of arrays
 
 			if (mExpression_Node)
 			{
+				// push expression value onto stack
 				mExpression_Node->Compile();
-				// level must be relative (note for Mira: precti si prednasku o generovani kodu)
-				emit_STO(sCurrent_Level - level, address);
 			}
+			else
+			{
+				// set the default value to zero
+				emit_LIT(0);
+			}
+			
+			// store the default or expression value in the variable
+			// level must be relative (note for Mira: precti si prednasku o generovani kodu)
+			emit_STO(sCurrent_Level - level, address);
 		};
 };
 

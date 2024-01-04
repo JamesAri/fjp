@@ -1,17 +1,15 @@
-int a = 666, b = 3.1;
+int a = 111, b = 222;
 
 int main()
 {
-	int a = 777;
+	int x;
 	if (444)
 	{
-		int x = 999;
-		a = 1;
+		x = 333;
 	}
 	if (555)
 	{
-		int x = 888;
-		a = 2;
+		int x = 444;
 	}
 
 	return 0;

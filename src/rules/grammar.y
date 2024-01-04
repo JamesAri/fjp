@@ -60,6 +60,7 @@ std::stack<int> sStack;
 
 	// AST nodes
 	CBlock_Node* 				block_node;
+
 	CDeclaration_Node* 			declaration_node;
 	CMulti_Declaration_Node* 	multi_declaration_node;
 
@@ -87,6 +88,7 @@ std::stack<int> sStack;
 %type <expression_node>			expression expression_value expression_operation
 
 %type <block_node>				program statement_block
+
 %type <declaration_node>		single_declaration
 %type <multi_declaration_node>	multi_declaration
 
@@ -295,7 +297,7 @@ expression_value:
     ;
 
 expression_operation:
-    expression '=' expression							{}
+    expression '=' expression							{$$ = new CAssignment_Node($1, $3);}
     | expression '+' expression							{}
     | expression '-' expression							{}
     | expression '*' expression							{}
