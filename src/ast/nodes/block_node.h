@@ -6,6 +6,7 @@
 #include "statement_node.h"
 
 #include "pl0.h"
+#include "generators.h"
 
 typedef std::vector<CStatement_Node*> statement_list_t;
 
@@ -29,6 +30,7 @@ class CBlock_Node : public CStatement_Node
 			std::cout << "CBlock_Node::Compile_Init()" << std::endl;
 
 			sCurrent_Level = 0;
+			sCurrent_Branch_Level = 0;
 			sCode_Length = 0;
 			sCurrent_Block_Address = 3;
 

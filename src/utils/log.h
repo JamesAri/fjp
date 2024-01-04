@@ -48,8 +48,8 @@ inline void print_identifier_table()
 {
 	std::cout << "\nIdentifier Table:" << std::endl;
 	std::cout << "-----------------" << std::endl;
-	std::cout << std::left << std::setw(15) << "Name" << std::left << std::setw(15) << "Type" << std::left << std::setw(15) << "Data type" << std::left << std::setw(15) << "Address" << std::left << std::setw(15) << "Level" << std::left << std::setw(15) << "Constant" << std::endl;
-	std::cout << std::left << std::setw(15) << "----" << std::left << std::setw(15) << "----" << std::left << std::setw(15) << "---------" << std::left << std::setw(15) << "-------" << std::left << std::setw(15) << "-----" << std::left << std::setw(15) << "--------" << std::endl;
+	std::cout << std::left << std::setw(15) << "Name" << std::left << std::setw(15) << "Type" << std::left << std::setw(15) << "Data type" << std::left << std::setw(15) << "Address" << std::left << std::setw(15) << "Level" << std::left << std::setw(15) << "Branch level" << std::left << std::setw(15) << "Constant" << std::left << std::setw(15) << "Deleted" << std::endl;
+	std::cout << std::left << std::setw(15) << "----" << std::left << std::setw(15) << "----" << std::left << std::setw(15) << "---------" << std::left << std::setw(15) << "-------" << std::left << std::setw(15) << "-----" << std::left << std::setw(15) << "------------" << std::left << std::setw(15) << "--------" << std::left << std::setw(15) << "-------" <<std::endl;
 	for (int i = 0; i < sIdentifier_Count; i++)
 	{
 		std::cout 
@@ -58,7 +58,9 @@ inline void print_identifier_table()
 		<< std::left << std::setw(15) << data_type_to_string(sIdentifier_Table[i].data_type)
 		<< std::left << std::setw(15) << sIdentifier_Table[i].address
 		<< std::left << std::setw(15) << sIdentifier_Table[i].level
+		<< std::left << std::setw(15) << sIdentifier_Table[i].branch_level
 		<< std::left << std::setw(15) << (sIdentifier_Table[i].is_constant ? "true" : "false")
+		<< std::left << std::setw(15) << (sIdentifier_Table[i].is_deleted ? "true" : "false")
 		<< std::endl;
 	}
 	std::cout << std::endl;

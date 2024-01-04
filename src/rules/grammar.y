@@ -35,6 +35,7 @@ CBlock_Node *sRootNode = nullptr;
 code_t sCode;
 // Will be correctly initialized with Compile_Init from root node
 int sCurrent_Level;
+int sCurrent_Branch_Level;
 unsigned int sCode_Length;
 unsigned int sCurrent_Block_Address;
 

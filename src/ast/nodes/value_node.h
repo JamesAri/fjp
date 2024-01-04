@@ -7,6 +7,8 @@
 #include "tokens.h"
 
 #include "pl0.h"
+#include "generators.h"
+
 
 class CValue_Node : public CExpression_Node
 {	

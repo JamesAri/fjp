@@ -51,7 +51,7 @@ PST 0 0        na zasobnkku X, L, A -> na adresu (L, A) se ulozi X
 typedef unsigned char instruction_t;
 typedef unsigned int operation_t;
 
-// Description of the extended PL/0 instruction set (help tab): https://home.zcu.cz/~lipka/fjp/pl0/ 
+// Description of the extended PL/0 isa (see help tab): https://home.zcu.cz/~lipka/fjp/pl0/ 
 namespace PL0
 {
 	constexpr instruction_t LIT =  0;
@@ -122,6 +122,7 @@ typedef TCode_Entry code_t[Max_Code_Length];
 
 extern code_t sCode;
 extern int sCurrent_Level;
+extern int sCurrent_Branch_Level;
 extern unsigned int sCode_Length;
 extern unsigned int sCurrent_Block_Address;
 
@@ -137,175 +138,5 @@ extern unsigned int sIdentifier_Count;
 
 // GLOBAL STACK
 extern std::stack<int> sStack;
-
-
-// UTILITY FUNCTIONS
-inline int find_identifier(const char *name, const unsigned int level = 0)
-{
-	// we want the most recent identifier
-	for (int i = sIdentifier_Count - 1; i >= 0; i--)
-	{	
-		// if identifier is in scope level above, return FAILURE
-		if (sIdentifier_Table[i].level < level)
-		{
-			return FAILURE;
-		}
-		if (strcmp(sIdentifier_Table[i].name, name) == 0)
-		{
-			return i;
-		}
-	}
-	
-	return FAILURE;
-}
-
-inline void add_identifier(const char *name, const EIdentifier_Type type, EData_Type data_type, const unsigned int address, const unsigned int level, const bool is_constant)
-{	
-	if (sIdentifier_Count >= Max_Identifier_Table_Length)
-	{
-		std::cout << "ERROR: Identifier table overflow" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	if (find_identifier(name, level) != FAILURE)
-	{
-		std::cout << "ERROR: Identifier already exists" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	TIdentifier *identifier = &sIdentifier_Table[sIdentifier_Count];
-	
-	identifier->type = type;
-	identifier->data_type = data_type;
-	identifier->address = address;
-	identifier->level = level;
-	identifier->is_constant = is_constant;
-	
-	for (unsigned int i = 0; i < Max_Identifier_Length; i++)
-	{
-		identifier->name[i] = name[i];
-		
-		if (name[i] == '\0')
-		{
-			break;
-		}
-	}
-	identifier->name[Max_Identifier_Length] = '\0';
-	
-	sIdentifier_Count++;
-}
-
-inline void emit(const instruction_t instruction, const int param_1, const TCode_Entry_Value param_2, const bool is_float)
-{
-	sCode[sCode_Length].instruction = instruction;
-	sCode[sCode_Length].param_1 = param_1;
-	sCode[sCode_Length].param_2 = param_2;
-	sCode[sCode_Length].is_float = is_float;
-	sCode_Length++;
-}
-
-inline void emit(const instruction_t instruction, const int param_1, const int param_2)
-{
-	TCode_Entry_Value value;
-	value.i = param_2;
-	emit(instruction, param_1, value, false);
-}
-
-inline void emit(const instruction_t instruction, const int param_1, const float param_2)
-{
-	TCode_Entry_Value value;
-	value.f = param_2;
-	emit(instruction, param_1, value, true);
-}
-
-inline void emit_LIT(const int value)
-{
-	emit(PL0::LIT, 0, value);
-}
-
-inline void emit_LIT(const float value)
-{
-	emit(PL0::LIT, 0, value);
-}
-
-inline void emit_OPR(const operation_t operation)
-{
-	emit(PL0::OPR, 0, static_cast<int>(operation));
-}
-
-inline void emit_LOD(const int level, const int address)
-{
-	emit(PL0::LOD, level, address);
-}
-
-inline void emit_STO(const int level, const int address)
-{
-	emit(PL0::STO, level, address);
-}
-
-inline void emit_CAL(const int level, const int address)
-{
-	emit(PL0::CAL, level, address);
-}
-
-inline void emit_INT(const int value)
-{
-	emit(PL0::INT, 0, value);
-}
-
-inline void emit_JMP(const int address)
-{
-	emit(PL0::JMP, 0, address);
-}
-
-inline void emit_JMC(const int address)
-{
-	emit(PL0::JMC, 0, address);
-}
-
-inline void emit_RET()
-{
-	emit(PL0::RET, 0, 0);
-}
-
-inline void emit_REA()
-{
-	emit(PL0::REA, 0, 0);
-}
-
-inline void emit_WRI()
-{
-	emit(PL0::WRI, 0, 0);
-}
-
-inline void emit_NEW()
-{
-	emit(PL0::NEW, 0, 0);
-}
-
-inline void emit_DEL()
-{
-	emit(PL0::DEL, 0, 0);
-}
-
-inline void emit_LDA()
-{
-	emit(PL0::LDA, 0, 0);
-}
-
-inline void emit_STA()
-{
-	emit(PL0::STA, 0, 0);
-}
-
-inline void emit_PLD()
-{
-	emit(PL0::PLD, 0, 0);
-}
-
-inline void emit_PST()
-{
-	emit(PL0::PST, 0, 0);
-}
 
 #endif // __PL0_H_

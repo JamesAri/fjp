@@ -9,6 +9,7 @@
 #include "type_node.h"
 
 #include "pl0.h"
+#include "generators.h"
 
 class CDeclaration_Node;
 
@@ -65,7 +66,8 @@ class CDeclaration_Node : public CStatement_Node
 				EIdentifier_Type::VARIABLE, 
 				mType_Node->mData_Type, 
 				address, 
-				level, 
+				level,
+				sCurrent_Branch_Level,
 				mIs_Constant
 			);
 
@@ -74,7 +76,7 @@ class CDeclaration_Node : public CStatement_Node
 			// increment stack pointer by 1 => variable will have random value that was
 			// previsouly on the stack, but if expression was provided, we will overwrite it
 			// in the next step
-			emit_INT(1);
+			emit_INT(1); // NOTE: this might change with the introduction of arrays
 
 			if (mExpression_Node)
 			{

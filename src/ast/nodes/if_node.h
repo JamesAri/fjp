@@ -6,6 +6,21 @@
 #include "statement_node.h"
 
 #include "pl0.h"
+#include "generators.h"
+
+/* Compile() method logic for CIf_Node:
+						
+ADDR_BEFORE					(here is ADDR_BEFORE address)
+if (boolean)				LIT(boolean)
+{							JMC(ADDR_ELSE_BODY)
+	IF BODY;				IF BODY instructions
+}							JMP(ADDR_AFTER)
+else [ADDR_ELSE_BODY]		ELSE BODY instructions
+{							(and next instruction is on ADDR_AFTER)
+	ELSE BODY;
+}
+ADDR_AFTER
+*/
 
 
 class CIf_Node : public CStatement_Node
@@ -27,8 +42,44 @@ class CIf_Node : public CStatement_Node
 		void Compile() override
 		{	
 			std::cout << "CIf_Node::Compile()" << std::endl;
-			mIf_Statement_Node->Compile();
-			if (mElse_Statement_Node) mElse_Statement_Node->Compile();
+			
+			// LIT(boolean) value onto stack
+			mCondition_Node->Compile(); 		
+
+			// save JMC instruction address
+			unsigned int jmc_instruction_address = sCode_Length; 
+
+			// JMC(ADDR_ELSE_BODY) now 0, ADDR_ELSE_BODY will be set later
+			// (if no else statement, ADDR_ELSE_BODY is ADDR_AFTER)
+			emit_JMC(0);			
+
+			// IF BODY instructions
+			branch_compile(mIf_Statement_Node);
+
+			if (mElse_Statement_Node) 
+			{	
+				unsigned int jmp_instruction_address = sCode_Length;
+
+				// if else branch provided, we need to jump over it
+				// i.e. genereate JMP instruction at the end of IF BODY
+				// JMP(ADDR_AFTER) now 0, ADDR_AFTER will be set later
+				emit_JMP(0);
+
+				// sCode_Length is ADDR_ELSE_BODY
+				unsigned int else_body_address = sCode_Length;
+
+				branch_compile(mElse_Statement_Node);
+
+				modify_param_2(jmc_instruction_address, else_body_address);
+
+				// sCode_Length is ADDR_AFTER
+				modify_param_2(jmp_instruction_address, sCode_Length);
+			}
+			else
+			{
+				// sCode_Length is ADDR_AFTER
+				modify_param_2(jmc_instruction_address, sCode_Length);
+			}
 		};
 };
 

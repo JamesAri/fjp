@@ -7,6 +7,7 @@
 #include "types.h"
 
 #include "pl0.h"
+#include "generators.h"
 
 
 class CIdentifier_Node : public CExpression_Node

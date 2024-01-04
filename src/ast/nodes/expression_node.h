@@ -4,9 +4,11 @@
 #include <iostream>
 
 #include "statement_node.h"
+
 #include "types.h"
 
 #include "pl0.h"
+#include "generators.h"
 
 class CExpression_Node : public CStatement_Node
 {

@@ -5,9 +5,11 @@
 
 #include "statement_node.h"
 #include "expression_node.h"
+
 #include "types.h"
 
 #include "pl0.h"
+#include "generators.h"
 
 
 typedef std::vector<CDeclaration_Node*> parameter_list_t;
@@ -47,44 +49,25 @@ class CFunction_Node : public CStatement_Node
 			}
 
 
-			// Push address of the JMP instruction below
-			sStack.push(sCode_Length); 
+			// Save the address of the JMP instruction below
+			int jmp_instruction_address = sCode_Length;
 			// To be overwritten later
 			emit_JMP(0);
 
 			add_identifier(
 				mIdentifier_Node->mIdentifier.c_str(), 
-				EIdentifier_Type::PROCEDURE, 
+				EIdentifier_Type::PROCEDURE,
 				mReturn_Type_Node->mData_Type, 
-				sCode_Length, // this now points after the JMP instruction above
-				sCurrent_Level, 
-				false // we do not allow constant procedures
+				sCode_Length, // this now points after the JMP instruction above - to the beginning of the function body
+				sCurrent_Level,
+				sCurrent_Branch_Level,
+				false
 			);
 			
-			sCurrent_Level++;
-
-			sStack.push(sCurrent_Block_Address);
+			scope_compile(mBody_Block_Node);
 			
-			sCurrent_Block_Address = 3;
-
-			// for PL/0 control structures
-			emit_INT(sCurrent_Block_Address);
-
-			mBody_Block_Node->Compile();
-
-			sCurrent_Block_Address = sStack.top();
-			sStack.pop();
-			
-			sCurrent_Level--;
-			
-			// Pop address of the JMP instruction saved earlier
-			int jmp_instruction_address = sStack.top();
-			sStack.pop();
-
 			// Overwrite JMP with correct address (after the fn definition)
-			TCode_Entry_Value jmp_address;
-			jmp_address.i = sCode_Length;
-			sCode[jmp_instruction_address].param_2 = jmp_address;
+			modify_param_2(jmp_instruction_address, sCode_Length);
 		};
 };
 
