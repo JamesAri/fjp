@@ -1,11 +1,11 @@
 int a = 111, b = 222;
 
-int main()
+int main(int argc)
 {
 	int x;
 	if (444)
 	{
-		x = 333;
+		x = a;
 	}
 	if (555)
 	{

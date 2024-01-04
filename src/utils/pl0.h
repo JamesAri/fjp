@@ -95,7 +95,6 @@ constexpr unsigned int Number_Of_Instructions = 20;
 
 constexpr unsigned int Max_Instruction_Symbol_Size = 3;
 
-// +1 for terminating character
 typedef char instruction_symbol_t[Max_Instruction_Symbol_Size + 1];
 
 constexpr instruction_symbol_t Instruction_Symbol_Table[Number_Of_Instructions] = 
@@ -103,6 +102,7 @@ constexpr instruction_symbol_t Instruction_Symbol_Table[Number_Of_Instructions] 
 
 
 // CODE STORAGE
+
 union TCode_Entry_Value
 {
 	int i;
@@ -120,23 +120,25 @@ struct TCode_Entry
 constexpr unsigned int Max_Code_Length = 10000;
 typedef TCode_Entry code_t[Max_Code_Length];
 
+// Global compiled code storage
 extern code_t sCode;
+
 extern int sCurrent_Level;
+
 extern int sCurrent_Branch_Level;
+
 extern unsigned int sCode_Length;
+
 extern unsigned int sCurrent_Block_Address;
 
 
 // IDENTIFIER STORAGE
+
 constexpr unsigned int Max_Identifier_Table_Length = 500;
 
 typedef TIdentifier identifier_table_t[Max_Identifier_Table_Length];
 
 extern identifier_table_t sIdentifier_Table;
 extern unsigned int sIdentifier_Count;
-
-
-// GLOBAL STACK
-extern std::stack<int> sStack;
 
 #endif // __PL0_H_

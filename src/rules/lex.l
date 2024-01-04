@@ -108,7 +108,6 @@ void save_indetifier(YYSTYPE *yylval)
 {
 	if (strlen(yytext) > Max_Identifier_Length) {
 		fprintf(stderr, "ERROR: identifier '%s' is too long\n", yytext);
-		// TODO: should free memory before exiting
 		exit(EXIT_FAILURE); 
 	}
 	yylval->token_identifier.identifier = strdup(yytext);

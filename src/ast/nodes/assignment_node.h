@@ -45,7 +45,7 @@ class CAssignment_Node : public CExpression_Node
 
 			if (index == FAILURE)
 			{
-				std::cout << "ERROR: identifier not declared: " << mIdentifier_Node->mIdentifier << std::endl;
+				std::cout << "ERROR: cannot assign to an undeclared variable: " << mIdentifier_Node->mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -61,7 +61,7 @@ class CAssignment_Node : public CExpression_Node
 			// check if identifier is not constant
 			if (identifier.is_constant)
 			{
-				std::cout << "ERROR: you cannot assign to a constant variable" << std::endl;
+				std::cout << "ERROR: you cannot assign to a constant" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -72,7 +72,7 @@ class CAssignment_Node : public CExpression_Node
 			emit_STO(sCurrent_Level - identifier.level, identifier.address);
 
 			// since this is still an expression, we need to push the value of the identifier onto the stack
-			// this allows to do for example following: ident1 = ident2 = expression
+			// this for example allows us to do following: ident1 = ident2 = expression
 			// all we need to do is compile the expression again and it will be put on top of the stack
 			mExpression_Node->Compile();
 		};

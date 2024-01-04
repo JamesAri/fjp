@@ -49,6 +49,11 @@ class CDeclaration_Node : public CStatement_Node
 			return mType_Node->mData_Type;
 		};
 
+		std::string Get_Identifier_Name()
+		{
+			return mIdentifier_Node->mIdentifier;
+		};
+
 		bool Is_Constant()
 		{
 			return mIs_Constant;

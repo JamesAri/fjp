@@ -42,9 +42,6 @@ unsigned int sCurrent_Block_Address;
 // Create identifier table and initialize count
 identifier_table_t sIdentifier_Table;
 unsigned int sIdentifier_Count = 0;
-
-// Initialize global stack
-std::stack<int> sStack;
 %}
 
 %locations
@@ -198,7 +195,7 @@ statement_block:
 
 statement:
     ';'										{/*x*/}
-    | expression ';'						{/*x*/}
+    | expression ';'						{$$ = new CExpression_Only_Node($1);}
     | single_declaration ';'				{$$ = $1;}
     | multi_declaration ';'					{$$ = $1;}
     | if_statement							{$$ = $1;}
@@ -234,59 +231,12 @@ matched_if_statement:
     IF '(' expression ')' branch_body ELSE branch_body		{$$ = new CIf_Node($3, $5, $7);}
     ;
 
-/////////////// 
-// SWITCH RULES
-/////////////// 
-switch_statement:
-    SWITCH '(' expression ')' branch_body					{}
-    ;
-
-case_statement:
-    CASE expression ':' statement							{}
-    | DEFAULT ':' statement									{}
-    ;
-
-//////////////
-// WHILE RULES
-//////////////
-while_statement:
-    WHILE '(' expression ')' branch_body					{}
-    ;
-
-do_while_statement:
-    DO branch_body WHILE '(' expression ')'					{}
-    ;
-
-
-////////////
-// FOR RULES
-////////////
-for_statement:
-    for_header branch_body									{}
-    ;
-
-for_header:
-    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'	{}
-    ;
-
-for_init_statement: 
-	/* e */												{}
-    | single_declaration								{}
-    | expression										{}
-    ;
-
-for_expression: 
-	/* e */												{}
-    | expression										{}
-    ;
-
-
 //////////////
 // EXPRESSIONS
 //////////////
 expression:
-    expression_value									{/* Do noting*/}
-    | expression_operation								{/* Do noting*/}
+    expression_value									{/*Do noting*/}
+    | expression_operation								{/*Do noting*/}
     ;
 
 expression_value:
@@ -350,6 +300,53 @@ value:
 
 identifier:
     IDENTIFIER											{$$ = new CIdentifier_Node($1); delete $1.identifier;}
+    ;
+
+
+/////////////// 
+// SWITCH RULES
+/////////////// 
+switch_statement:
+    SWITCH '(' expression ')' branch_body					{}
+    ;
+
+case_statement:
+    CASE expression ':' statement							{}
+    | DEFAULT ':' statement									{}
+    ;
+
+//////////////
+// WHILE RULES
+//////////////
+while_statement:
+    WHILE '(' expression ')' branch_body					{}
+    ;
+
+do_while_statement:
+    DO branch_body WHILE '(' expression ')'					{}
+    ;
+
+
+////////////
+// FOR RULES
+////////////
+for_statement:
+    for_header branch_body									{}
+    ;
+
+for_header:
+    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'	{}
+    ;
+
+for_init_statement: 
+	/* e */												{}
+    | single_declaration								{}
+    | expression										{}
+    ;
+
+for_expression: 
+	/* e */												{}
+    | expression										{}
     ;
 
 /////////////////
