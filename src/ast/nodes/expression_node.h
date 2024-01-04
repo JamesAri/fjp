@@ -31,6 +31,11 @@ class CExpression_Node : public CStatement_Node
 			//
 		};
 
+		EData_Type Get_Data_Type() const
+		{
+			return mData_Type;
+		};
+
 		virtual ~CExpression_Node() = default;
 
 		virtual void Compile() override = 0;

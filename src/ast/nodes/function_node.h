@@ -114,7 +114,8 @@ class CFunction_Node : public CStatement_Node
 				sCode_Length, // this now points after the JMP instruction above - to the beginning of the function body
 				sCurrent_Level,
 				sCurrent_Branch_Level,
-				false
+				false,
+				mParameter_List->size()
 			);
 			
 			compile_scope(mBody_Block_Node, mParameter_List);
@@ -157,16 +158,34 @@ class CFunction_Call_Node : public CExpression_Node
 			// check if identifier is not a variable
 			if (identifier.type == EIdentifier_Type::VARIABLE)
 			{
-				std::cout << "ERROR: you cannot call a variable" << std::endl;
+				std::cout << "ERROR: you cannot call a variable: " << mIdentifier_Node->mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
-			// TODO: check if number of arguments matches number of parameters
+			// check if number of arguments matches number of parameters
+			if (mArgument_List->size() != identifier.number_of_parameters)
+			{
+				std::cout << "ERROR: number of arguments does not match number of the function parameters: " << identifier.name << std::endl;
+				exit(EXIT_FAILURE);
+			}
 
-			// TODO: compile arguments
+			// Compile arguments:
+		
+			// 3 to skip over control structures when call is made
+			emit_INT(3);
 
-			// emit CAL instruction
-			emit_CAL(-1, -1);
+			for (auto argument : *mArgument_List)
+			{
+				argument->Compile();
+			}
+
+			// Return back where we were -> 3 from skipping control structures and mArgument_List->size()
+			// from generated experssions on the stack.
+			// When call is made, function body will pop the arguments.
+			emit_INT(-(3 + mArgument_List->size()));
+
+			// Emit function call instruction:
+			emit_CAL(sCurrent_Level - identifier.level, identifier.address);
 		};
 };
 
@@ -194,9 +213,18 @@ class CReturn_Node : public CStatement_Node
 
 			if (mExpression_Node)
 			{
+				// check if return value isn't void type
+
+				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+				{
+					std::cout << "ERROR: cannot return void type" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+				// TODO: move correctly stack
 				mExpression_Node->Compile();
-				emit_RET();
 			}
+
+			emit_RET();
 		};
 };
 

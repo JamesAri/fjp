@@ -1,6 +1,7 @@
 #ifndef __TYPES_NODE_H_
 #define __TYPES_NODE_H_
 
+// inclusive
 constexpr unsigned int Max_Identifier_Length = 31;
 
 enum EData_Type
@@ -22,7 +23,6 @@ enum EIdentifier_Type
 struct TFunction_Parameter
 {
 	EData_Type data_type;
-	char name[Max_Identifier_Length + 1];
 	bool is_constant;
 };
 
@@ -50,7 +50,8 @@ struct TIdentifier
 	// Should be removed in the future.
 	bool is_deleted; 
 	// used for procedures only
-	function_parameter_list_t parameters;
+	unsigned int number_of_parameters;
+	// function_parameter_list_t parameters;
 };
 
 #endif // __TYPES_NODE_H_

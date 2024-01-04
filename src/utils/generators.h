@@ -77,7 +77,16 @@ inline void mark_branch_identifiers_as_deleted(int level, int branch_level)
 	}
 }
 
-inline void add_identifier(const char *name, const EIdentifier_Type type, EData_Type data_type, const unsigned int address, const unsigned int level, const unsigned int branch_level, const bool is_constant)
+inline void add_identifier(
+	const char *name, 
+	const EIdentifier_Type type, 
+	EData_Type data_type, 
+	const unsigned int address, 
+	const unsigned int level, 
+	const unsigned int branch_level, 
+	const bool is_constant,
+	const unsigned int number_of_parameters = 0
+	)
 {	
 	if (sIdentifier_Count >= Max_Identifier_Table_Length)
 	{
@@ -99,6 +108,7 @@ inline void add_identifier(const char *name, const EIdentifier_Type type, EData_
 	identifier->level = level;
 	identifier->branch_level = branch_level;
 	identifier->is_constant = is_constant;
+	identifier->number_of_parameters = number_of_parameters;
 	
 	for (unsigned int i = 0; i < Max_Identifier_Length; i++)
 	{

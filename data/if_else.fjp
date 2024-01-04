@@ -12,7 +12,7 @@ int main(int argc)
 		int x = 444;
 	}
 
-	return 0;
+	return 66666;
 }
 
-main();
+main(77777);
