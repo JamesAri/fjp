@@ -73,6 +73,9 @@ unsigned int sIdentifier_Count = 0;
 
 	CIf_Node* 					if_node;
 
+	CWhile_Node* 				while_node;
+	CDo_While_Node* 			do_while_node;
+
 	// Token containers
 	TToken_Value 				token_value;
 	TToken_Identifier 			token_identifier;
@@ -100,6 +103,9 @@ unsigned int sIdentifier_Count = 0;
 %type <return_node>				return_statement
 
 %type <if_node>					if_statement unmatched_if_statement matched_if_statement
+
+%type <while_node>				while_statement
+%type <do_while_node>			do_while_statement
 
 %type <statement_list>			statement_list
 %type <parameter_list>			parameter_list function_parameters
@@ -203,7 +209,7 @@ statement:
     | if_statement							{$$ = $1;}
     | switch_statement						{}
     | case_statement						{}
-    | while_statement						{}
+    | while_statement						{$$ = $1;}
     | do_while_statement ';'				{}
     | for_statement							{}
     | function								{$$ = $1;}
@@ -321,11 +327,11 @@ case_statement:
 // WHILE RULES
 //////////////
 while_statement:
-    WHILE '(' expression ')' branch_body					{}
+    WHILE '(' expression ')' branch_body					{$$ = new CWhile_Node($3, $5);}
     ;
 
 do_while_statement:
-    DO branch_body WHILE '(' expression ')'					{}
+    DO branch_body WHILE '(' expression ')'					{$$ = new CDo_While_Node($5, $2);}
     ;
 
 

@@ -8,6 +8,7 @@
 #include "types.h"
 
 #include "pl0.h"
+#include "identifiers.h"
 #include "generators.h"
 
 class CExpression_Node : public CStatement_Node
@@ -20,7 +21,7 @@ class CExpression_Node : public CStatement_Node
 	public:
 
 		CExpression_Node()
-			: mData_Type(EData_Type::UNKNOWN_TYPE), mIs_Constant(true)
+			: mData_Type(EData_Type::UNKNOWN), mIs_Constant(true)
 		{
 			//
 		};
@@ -40,6 +41,21 @@ class CExpression_Node : public CStatement_Node
 		EData_Type Get_Data_Type() const
 		{
 			return mData_Type;
+		};
+
+		void Set_Data_Type(const EData_Type &type)
+		{
+			mData_Type = type;
+		};
+
+		bool Is_Constant() const
+		{
+			return mIs_Constant;
+		};
+
+		void Set_Constant(const bool is_constant)
+		{
+			mIs_Constant = is_constant;
 		};
 
 		virtual ~CExpression_Node() = default;
@@ -74,6 +90,7 @@ class CExpression_Only_Node : public CStatement_Node
 			
 			mExpression_Node->Compile();
 
+			// void type expression should not generate any value on the stack
 			if (mExpression_Node->Get_Data_Type() != EData_Type::VOID_TYPE)
 			{
 				// decreases stack pointer by 1 - removes non-void expression value from the stack

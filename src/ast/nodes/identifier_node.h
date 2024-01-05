@@ -5,11 +5,14 @@
 
 #include "common.h"
 
+#include "expression_node.h"
+
 #include "tokens.h"
 #include "types.h"
 
 #include "pl0.h"
 #include "generators.h"
+#include "identifiers.h"
 
 
 class CIdentifier_Node : public CExpression_Node
@@ -24,19 +27,32 @@ class CIdentifier_Node : public CExpression_Node
 			//
 		};
 
-		void Compile() override
+		TIdentifier Find_Declared_Identifier(std::string error_message)
 		{
-			std::cout << "CIdentifier_Node::Compile()" << std::endl;
-
 			int index = find_identifier(mIdentifier.c_str());
 
 			if (index == FAILURE)
 			{
-				std::cerr << "ERROR: undeclared identifier " << mIdentifier << std::endl;
+				std::cerr << error_message << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
 			TIdentifier identifier = sIdentifier_Table[index];
+
+			// ! UPDATE NODE DATA ! - this is important for the parent node to know what type of data is on the stack
+			mData_Type = identifier.data_type;
+			mIs_Constant = identifier.is_constant;
+
+			return identifier;
+		};
+
+		void Compile() override
+		{
+			std::cout << "CIdentifier_Node::Compile()" << std::endl;
+
+			TIdentifier identifier = Find_Declared_Identifier(
+				"ERROR: undeclared identifier: " + mIdentifier
+			);
 
 			if (identifier.type == EIdentifier_Type::PROCEDURE)
 			{

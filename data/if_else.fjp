@@ -1,15 +1,16 @@
-bool a = true;
-bool b = false;
+void test()
+{
+
+}
 
 int main()
 {
-	int x = 777;
-	int b = -x;
-	if (b || a)
+	int i = 0;
+	while(i < 10)
 	{
-		x = 666;
+		i = i + 1;
 	}
-	return b;
+	return i;
 }
 
 main();

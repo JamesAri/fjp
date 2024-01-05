@@ -9,7 +9,9 @@
 #include "type_node.h"
 
 #include "pl0.h"
+#include "identifiers.h"
 #include "generators.h"
+
 
 class CDeclaration_Node;
 
@@ -33,10 +35,13 @@ class CDeclaration_Node : public CStatement_Node
 	public:
 
 		CDeclaration_Node(CType_Node *type, CIdentifier_Node *identifier, const bool is_constant, CExpression_Node *expression = nullptr)
-			: mIs_Constant(is_constant), mExpression_Node(expression)
+			: mType_Node(type), mIdentifier_Node(identifier), mIs_Constant(is_constant), mExpression_Node(expression)
 		{
-			this->mType_Node = type;
-			this->mIdentifier_Node = identifier;
+			if(type->mData_Type == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot declare a variable of 'void' type: " << identifier->mIdentifier << std::endl;
+				exit(EXIT_FAILURE);
+			}
 		};
 
 		void Set_Expression(CExpression_Node *expression)
@@ -85,6 +90,13 @@ class CDeclaration_Node : public CStatement_Node
 			{
 				// push expression value onto stack
 				mExpression_Node->Compile();
+				
+				// check if expression is not void
+				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: cannot assign 'void' type to a variable" << std::endl;
+					exit(EXIT_FAILURE);
+				}
 			}
 			else
 			{

@@ -10,6 +10,7 @@
 #include "identifier_node.h"
 
 #include "pl0.h"
+#include "identifiers.h"
 #include "generators.h"
 
 
@@ -40,16 +41,16 @@ class CAssignment_Node : public CExpression_Node
 		{
 			std::cout << "CAssignment_Node::Compile()" << std::endl;
 
-			// check if identifier is declared
-			int index = find_identifier(mIdentifier_Node->mIdentifier.c_str());
+			TIdentifier identifier = mIdentifier_Node->Find_Declared_Identifier(
+				"ERROR: cannot assign to an undeclared variable: " + mIdentifier_Node->mIdentifier
+			);
 
-			if (index == FAILURE)
+			// check if identifier is not of a void type
+			if (identifier.data_type == EData_Type::VOID_TYPE)
 			{
-				std::cerr << "ERROR: cannot assign to an undeclared variable: " << mIdentifier_Node->mIdentifier << std::endl;
+				std::cerr << "ERROR: cannot assign to a 'void' type" << std::endl;
 				exit(EXIT_FAILURE);
 			}
-
-			TIdentifier identifier = sIdentifier_Table[index];
 
 			// check if identifier is not a function
 			if (identifier.type == EIdentifier_Type::PROCEDURE)
@@ -67,6 +68,13 @@ class CAssignment_Node : public CExpression_Node
 
 			// compile the expression
 			mExpression_Node->Compile();
+
+			// check if expression is not void
+			if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot assign 'void' type to a variable" << std::endl;
+				exit(EXIT_FAILURE);
+			}
 
 			// store the value of the expression in the identifier
 			emit_STO(sCurrent_Level - identifier.level, identifier.address);

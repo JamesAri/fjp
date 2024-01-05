@@ -10,9 +10,11 @@
 #include "expression_node.h"
 
 #include "operators.h"
+#include "types.h"
 
-#include "generators.h"
 #include "pl0.h"
+#include "identifiers.h"
+#include "generators.h"
 
 class CUnary_Operation_Node : public CExpression_Node
 {
@@ -61,9 +63,9 @@ class CBinary_Operation_Node : public CExpression_Node
 
 	public:
 
-		// expression will take over the lhs data type 
+		// data type will be known when both expressions are compiled
 		CBinary_Operation_Node(CExpression_Node *lhs, CExpression_Node *rhs)
-			: CExpression_Node(lhs->Get_Data_Type(), true), mLhs_Node(lhs), mRhs_Node(rhs)
+			: CExpression_Node(EData_Type::UNKNOWN, true), mLhs_Node(lhs), mRhs_Node(rhs)
 		{
 			// 
 		}
@@ -89,7 +91,10 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 		{
 			std::cout << "CArithmetic_Operation_Node::Compile()" << std::endl;
 
-			if (mData_Type == EData_Type::VOID_TYPE)
+			mLhs_Node->Compile();
+			mRhs_Node->Compile();
+
+			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
 			{
 				std::cerr << "ERROR: cannot perform arithmetic operations on 'void' type" << std::endl;
 				exit(EXIT_FAILURE);
@@ -104,9 +109,8 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 				exit(EXIT_FAILURE);
 			}
 
-			mLhs_Node->Compile();
-
-			mRhs_Node->Compile();
+			// we take over the data type of the left hand side expression
+			this->mData_Type = mLhs_Node->Get_Data_Type();
 
 			switch (mOperation)
 			{

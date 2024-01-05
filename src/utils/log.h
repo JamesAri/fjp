@@ -16,8 +16,6 @@ inline std::string identifier_type_to_string(EIdentifier_Type type)
 			return "var";
 		case EIdentifier_Type::PROCEDURE:
 			return "procedure";
-		default:
-			return "unknown";
 	}
 }
 
@@ -37,8 +35,8 @@ inline std::string data_type_to_string(EData_Type type)
 			return "char";
 		case EData_Type::VOID_TYPE:
 			return "void";
-		default:
-			return "unknown";
+		case EData_Type::UNKNOWN:
+			return "not defined";
 	}
 }
 

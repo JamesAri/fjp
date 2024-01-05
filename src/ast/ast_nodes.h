@@ -12,5 +12,7 @@
 #include "nodes/if_node.h"
 #include "nodes/assignment_node.h"
 #include "nodes/operation_node.h"
+#include "nodes/while_node.h"
+#include "nodes/do_while_node.h"
 
 #endif // __NODES_H_

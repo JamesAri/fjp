@@ -12,6 +12,8 @@
 
 #include "pl0.h"
 #include "generators.h"
+#include "identifiers.h"
+
 
 typedef std::vector<CDeclaration_Node*> parameter_list_t;
 typedef std::vector<CExpression_Node*> argument_list_t;
@@ -168,15 +170,12 @@ class CFunction_Call_Node : public CExpression_Node
 		{
 			std::cout << "CFunction_Call_Node::Compile()" << std::endl;
 			
-			int index = find_identifier(mIdentifier_Node->mIdentifier.c_str());
+			TIdentifier identifier = mIdentifier_Node->Find_Declared_Identifier(
+				"ERROR: function not defined: " + mIdentifier_Node->mIdentifier
+			);
 
-			if (index == FAILURE)
-			{
-				std::cerr << "ERROR: function not defined: " << mIdentifier_Node->mIdentifier << std::endl;
-				exit(EXIT_FAILURE);
-			}
-
-			TIdentifier identifier = sIdentifier_Table[index];
+			// we will update this expression node data type to the return type of the function
+			mData_Type = identifier.data_type;
 
 			if (identifier.type == EIdentifier_Type::VARIABLE)
 			{
@@ -201,6 +200,13 @@ class CFunction_Call_Node : public CExpression_Node
 			for (auto argument : *mArgument_List)
 			{
 				argument->Compile();
+
+				// check if argument is not void
+				if (argument->Get_Data_Type() == EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: cannot pass 'void' type as an argument" << std::endl;
+					exit(EXIT_FAILURE);
+				}
 			}
 
 			// Return back where we were:

@@ -6,6 +6,7 @@
 #include "statement_node.h"
 
 #include "pl0.h"
+#include "identifiers.h"
 #include "generators.h"
 
 typedef std::vector<CStatement_Node*> statement_list_t;
@@ -18,7 +19,10 @@ class CBlock_Node : public CStatement_Node
 
 	public:
 
-		CBlock_Node() {};
+		CBlock_Node()
+		{
+			mStatement_List = new statement_list_t();
+		};
 
 		CBlock_Node(statement_list_t *statements)
 		{

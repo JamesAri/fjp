@@ -11,7 +11,7 @@ enum class EData_Type
 	CHAR_TYPE,
 	BOOL_TYPE,
 	VOID_TYPE,
-	UNKNOWN_TYPE
+	UNKNOWN
 };
 
 enum class EIdentifier_Type

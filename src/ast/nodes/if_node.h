@@ -6,6 +6,7 @@
 #include "statement_node.h"
 
 #include "pl0.h"
+#include "identifiers.h"
 #include "generators.h"
 
 /* Compile() method logic for CIf_Node:
@@ -44,7 +45,14 @@ class CIf_Node : public CStatement_Node
 			std::cout << "CIf_Node::Compile()" << std::endl;
 			
 			// LIT(boolean) value onto stack
-			mCondition_Node->Compile(); 		
+			mCondition_Node->Compile();
+
+			// check if conditions is not of a void type
+			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot use 'void' type in if condition" << std::endl;
+				exit(EXIT_FAILURE);
+			}
 
 			// save JMC instruction address
 			unsigned int jmc_instruction_address = sCode_Length; 
