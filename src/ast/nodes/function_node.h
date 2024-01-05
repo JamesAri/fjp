@@ -8,19 +8,16 @@
 #include "statement_node.h"
 #include "expression_node.h"
 
+#include "node_lists.h"
 #include "types.h"
 
 #include "pl0.h"
 #include "generators.h"
-#include "identifiers.h"
 
-
-typedef std::vector<CDeclaration_Node*> parameter_list_t;
-typedef std::vector<CExpression_Node*> argument_list_t;
 
 namespace
 {
-	void compile_function_parameter_list(parameter_list_t *parameter_list)
+	void compile_function_parameter_list(declaration_list_t *parameter_list)
 	{
 		// increase SP by the size of arguments (parameters at this point)
 		// they will be saved to identifer table below
@@ -49,7 +46,7 @@ namespace
 		}
 	}
 
-	void compile_scope(CStatement_Node *function_body, parameter_list_t *parameter_list)
+	void compile_scope(CStatement_Node *function_body, declaration_list_t *parameter_list)
 	{
 		sCurrent_Level++;
 
@@ -101,13 +98,13 @@ class CFunction_Node : public CStatement_Node
 	
 		CType_Node *mReturn_Type_Node;
 		CIdentifier_Node *mIdentifier_Node;
-		parameter_list_t *mParameter_List;
+		declaration_list_t *mParameter_List;
 
 		CBlock_Node *mBody_Block_Node;
 	
 	public:
 
-		CFunction_Node(CType_Node *return_type, CIdentifier_Node *identifier, parameter_list_t *parameters)
+		CFunction_Node(CType_Node *return_type, CIdentifier_Node *identifier, declaration_list_t *parameters)
 			: mReturn_Type_Node(return_type), mIdentifier_Node(identifier), mParameter_List(parameters), mBody_Block_Node(nullptr)
 		{
 			//
@@ -156,11 +153,11 @@ class CFunction_Call_Node : public CExpression_Node
 	private:
 
 		CIdentifier_Node *mIdentifier_Node;
-		argument_list_t *mArgument_List;
+		expression_list_t *mArgument_List;
 
 	public:
 
-		CFunction_Call_Node(CIdentifier_Node *identifier, argument_list_t *arguments)
+		CFunction_Call_Node(CIdentifier_Node *identifier, expression_list_t *arguments)
 		{
 			this->mIdentifier_Node = identifier;
 			this->mArgument_List = arguments;

@@ -5,11 +5,10 @@
 
 #include "statement_node.h"
 
-#include "pl0.h"
-#include "identifiers.h"
-#include "generators.h"
+#include "node_lists.h"
 
-typedef std::vector<CStatement_Node*> statement_list_t;
+#include "pl0.h"
+#include "generators.h"
 
 class CBlock_Node : public CStatement_Node
 {	

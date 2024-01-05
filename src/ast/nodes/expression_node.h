@@ -8,7 +8,6 @@
 #include "types.h"
 
 #include "pl0.h"
-#include "identifiers.h"
 #include "generators.h"
 
 class CExpression_Node : public CStatement_Node

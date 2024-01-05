@@ -7,7 +7,6 @@
 #include "expression_node.h"
 
 #include "pl0.h"
-#include "identifiers.h"
 #include "generators.h"
 
 class CWhile_Node : public CStatement_Node

@@ -13,7 +13,6 @@
 #include "types.h"
 
 #include "pl0.h"
-#include "identifiers.h"
 #include "generators.h"
 
 class CUnary_Operation_Node : public CExpression_Node

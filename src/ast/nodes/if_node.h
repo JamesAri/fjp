@@ -6,7 +6,6 @@
 #include "statement_node.h"
 
 #include "pl0.h"
-#include "identifiers.h"
 #include "generators.h"
 
 /* Compile() method logic for CIf_Node:

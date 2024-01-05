@@ -9,16 +9,7 @@
 #include "type_node.h"
 
 #include "pl0.h"
-#include "identifiers.h"
 #include "generators.h"
-
-
-class CDeclaration_Node;
-
-namespace
-{
-	typedef std::vector<CDeclaration_Node*> declaration_list_t;
-}
 
 
 class CDeclaration_Node : public CStatement_Node

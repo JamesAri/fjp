@@ -2,6 +2,7 @@
 #define __MODIFIERS_H_
 
 #include <iostream>
+#include <functional>
 
 #include "nodes/statement_node.h"
 
@@ -169,6 +170,20 @@ inline void branch_compile(CStatement_Node *statement)
 	// mark all identifiers in current branch as deleted
 	mark_branch_identifiers_as_deleted(sCurrent_Level, sCurrent_Branch_Level);
 	
+	sCurrent_Branch_Level--;
+}
+
+
+// executes given function in branch context
+inline void branch_compile(const std::function<void()> &compileFunc)
+{
+	sCurrent_Branch_Level++;
+
+	compileFunc();
+
+	// mark all identifiers in current branch as deleted
+	mark_branch_identifiers_as_deleted(sCurrent_Level, sCurrent_Branch_Level);
+
 	sCurrent_Branch_Level--;
 }
 

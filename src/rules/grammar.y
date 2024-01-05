@@ -76,18 +76,20 @@ unsigned int sIdentifier_Count = 0;
 	CWhile_Node* 				while_node;
 	CDo_While_Node* 			do_while_node;
 
+	CFor_Loop_Node* 			for_loop_node;
+
 	// Token containers
 	TToken_Value 				token_value;
 	TToken_Identifier 			token_identifier;
 
 	// Lists
 	statement_list_t* 			statement_list;
-	parameter_list_t* 			parameter_list;
-	argument_list_t* 			argument_list;
+	declaration_list_t* 		parameter_list;
+	expression_list_t* 			argument_list;
 }
 
 %type <statement_node>			statement branch_body for_init_statement
-%type <expression_node>			expression expression_value expression_operation
+%type <expression_node>			expression expression_value expression_operation for_expression
 
 %type <block_node>				program statement_block
 
@@ -106,6 +108,8 @@ unsigned int sIdentifier_Count = 0;
 
 %type <while_node>				while_statement
 %type <do_while_node>			do_while_statement
+
+%type <for_loop_node>			for_statement for_header
 
 %type <statement_list>			statement_list
 %type <parameter_list>			parameter_list function_parameters
@@ -315,23 +319,23 @@ identifier:
 // SWITCH RULES
 /////////////// 
 switch_statement:
-    SWITCH '(' expression ')' branch_body					{}
+    SWITCH '(' expression ')' branch_body				{}
     ;
 
 case_statement:
-    CASE expression ':' statement							{}
-    | DEFAULT ':' statement									{}
+    CASE expression ':' statement						{}
+    | DEFAULT ':' statement								{}
     ;
 
 //////////////
 // WHILE RULES
 //////////////
 while_statement:
-    WHILE '(' expression ')' branch_body					{$$ = new CWhile_Node($3, $5);}
+    WHILE '(' expression ')' branch_body				{$$ = new CWhile_Node($3, $5);}
     ;
 
 do_while_statement:
-    DO branch_body WHILE '(' expression ')'					{$$ = new CDo_While_Node($5, $2);}
+    DO branch_body WHILE '(' expression ')'				{$$ = new CDo_While_Node($5, $2);}
     ;
 
 
@@ -339,22 +343,22 @@ do_while_statement:
 // FOR RULES
 ////////////
 for_statement:
-    for_header branch_body									{}
+    for_header branch_body								{$$ = $1; $1->Set_Body($2);}
     ;
 
 for_header:
-    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'	{}
+    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'	{$$ = new CFor_Loop_Node($3, $5, $7, $9);}
     ;
 
 for_init_statement: 
-	/* e */												{}
-    | single_declaration								{}
-    | expression										{}
+	/* e */												{/*TODO*/}
+    | single_declaration								{$$ = $1;}
+    | expression										{$$ = $1;}
     ;
 
 for_expression: 
-	/* e */												{}
-    | expression										{}
+	/* e */												{/*TODO*/}
+    | expression										{$$ = $1;}
     ;
 
 /////////////////
@@ -369,12 +373,12 @@ function_header:
     ;
 
 function_parameters:
-	/* e */												{$$ = new parameter_list_t();}
+	/* e */												{$$ = new declaration_list_t();}
 	| parameter_list									{$$ = $1;}
 	;	
 
 parameter_list: 										
-    single_declaration									{$$ = new parameter_list_t(); $$->push_back($1);}
+    single_declaration									{$$ = new declaration_list_t(); $$->push_back($1);}
     | parameter_list ',' single_declaration				{$$ = $1; $$->push_back($3);}
     ;
 
@@ -383,12 +387,12 @@ function_call:
     ;
 
 function_argmunets:
-	/* e */												{$$ = new argument_list_t();}
+	/* e */												{$$ = new expression_list_t();}
 	| argument_list										{$$ = $1;}
 	;	
 
 argument_list: 
-    expression											{$$ = new argument_list_t(); $$->push_back($1);}
+    expression											{$$ = new expression_list_t(); $$->push_back($1);}
     | argument_list ',' expression						{$$ = $1; $$->push_back($3);}
     ;
 

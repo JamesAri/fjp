@@ -12,7 +12,6 @@
 
 #include "pl0.h"
 #include "generators.h"
-#include "identifiers.h"
 
 
 class CIdentifier_Node : public CExpression_Node
