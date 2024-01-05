@@ -3,7 +3,7 @@ bool b = false;
 
 int main()
 {
-	int x = 5;
+	int x = 777;
 	int b = -x;
 	if (b || a)
 	{

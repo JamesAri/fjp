@@ -237,15 +237,15 @@ matched_if_statement:
 // EXPRESSIONS
 //////////////
 expression:
-    expression_value									{/*Do noting*/}
-    | expression_operation								{/*Do noting*/}
+    expression_value									{$$ = $1;}
+    | expression_operation								{$$ = $1;}
     ;
 
 expression_value:
-    '(' expression ')'									{}
+    '(' expression ')'									{$$ = $2;}
     | identifier										{$$ = $1;}
     | value												{$$ = $1;}	
-    | function_call										{}
+    | function_call										{$$ = $1;}
     ;
 
 expression_operation:
