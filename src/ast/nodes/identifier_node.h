@@ -32,7 +32,7 @@ class CIdentifier_Node : public CExpression_Node
 
 			if (index == FAILURE)
 			{
-				std::cout << "ERROR: undeclared identifier " << mIdentifier << std::endl;
+				std::cerr << "ERROR: undeclared identifier " << mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -40,7 +40,7 @@ class CIdentifier_Node : public CExpression_Node
 
 			if (identifier.type == EIdentifier_Type::PROCEDURE)
 			{
-				std::cout << "ERROR: you cannot use a function name as an expression: " << identifier.name << std::endl;
+				std::cerr << "ERROR: you cannot use a function name as an expression: " << identifier.name << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -53,10 +53,10 @@ class CIdentifier_Node : public CExpression_Node
 					emit_LOD(sCurrent_Level - identifier.level, identifier.address);
 					break;
 				case EData_Type::VOID_TYPE:
-					std::cout << "ERROR: cannot use void type as an expression: " << identifier.name << std::endl;
+					std::cerr << "ERROR: cannot use void type as an expression: " << identifier.name << std::endl;
 					exit(EXIT_FAILURE);
 				default:
-					std::cout << "ERROR: unknown identifier type " << identifier.name << std::endl;
+					std::cerr << "ERROR: unknown identifier type " << identifier.name << std::endl;
 					exit(EXIT_FAILURE);
 			}
 		};

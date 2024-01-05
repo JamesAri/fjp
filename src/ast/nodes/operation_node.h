@@ -91,14 +91,14 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 
 			if (mData_Type == EData_Type::VOID_TYPE)
 			{
-				std::cout << "ERROR: cannot perform arithmetic operations on void type" << std::endl;
+				std::cerr << "ERROR: cannot perform arithmetic operations on 'void' type" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
 			// check if both expressions have compatible data types
 			if (mLhs_Node->Get_Data_Type() != mRhs_Node->Get_Data_Type())
 			{
-				std::cout << "ERROR: incompatible data types in binary operation" << std::endl;
+				std::cerr << "ERROR: incompatible data types in binary operation" << std::endl;
 				std::cout << "Left hand side data type: " << data_type_to_string(mLhs_Node->Get_Data_Type()) << std::endl;
 				std::cout << "Right hand side data type: " << data_type_to_string(mRhs_Node->Get_Data_Type()) << std::endl;
 				exit(EXIT_FAILURE);
@@ -149,7 +149,7 @@ class CLogical_Operation_Node : public CBinary_Operation_Node
 
 			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
 			{
-				std::cout << "ERROR: could not convert from 'void' to 'bool'" << std::endl;
+				std::cerr << "ERROR: logical operation failed, could not convert from 'void' to 'bool'" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -239,6 +239,12 @@ class CRelational_Operation_Node : public CBinary_Operation_Node
 			mLhs_Node->Compile();
 
 			mRhs_Node->Compile();
+
+			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: compare operation failed, could not convert from 'void' to 'bool'" << std::endl;
+				exit(EXIT_FAILURE);
+			}
 
 			switch (mOperation)
 			{

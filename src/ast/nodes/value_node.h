@@ -41,7 +41,7 @@ class CValue_Node : public CExpression_Node
 					emit_LIT(mToken_Value[0] == 't' ? 1 : 0);
 					break;
 				default:
-					std::cout << "ERROR: unknown value type " << mToken_Value << std::endl;
+					std::cerr << "ERROR: unknown value type " << mToken_Value << std::endl;
 					break;
 			}
 		};

@@ -90,13 +90,13 @@ inline void add_identifier(
 {	
 	if (sIdentifier_Count >= Max_Identifier_Table_Length)
 	{
-		std::cout << "ERROR: Identifier table overflow" << std::endl;
+		std::cerr << "ERROR: Identifier table overflow" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 	if (find_identifier(name, level, branch_level) != FAILURE)
 	{
-		std::cout << "ERROR: Identifier \"" << name <<  "\" already exists" << std::endl;
+		std::cerr << "ERROR: Identifier \"" << name <<  "\" already exists" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 

@@ -122,7 +122,7 @@ class CFunction_Node : public CStatement_Node
 
 			if (!mBody_Block_Node)
 			{
-				std::cout << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
+				std::cerr << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -172,7 +172,7 @@ class CFunction_Call_Node : public CExpression_Node
 
 			if (index == FAILURE)
 			{
-				std::cout << "ERROR: function not defined: " << mIdentifier_Node->mIdentifier << std::endl;
+				std::cerr << "ERROR: function not defined: " << mIdentifier_Node->mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -180,13 +180,13 @@ class CFunction_Call_Node : public CExpression_Node
 
 			if (identifier.type == EIdentifier_Type::VARIABLE)
 			{
-				std::cout << "ERROR: you cannot call a variable: " << mIdentifier_Node->mIdentifier << std::endl;
+				std::cerr << "ERROR: you cannot call a variable: " << mIdentifier_Node->mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
 			if (mArgument_List->size() != identifier.number_of_parameters)
 			{
-				std::cout << "ERROR: number of arguments does not match number of the function parameters: " << identifier.name << std::endl;
+				std::cerr << "ERROR: number of arguments does not match number of the function parameters: " << identifier.name << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -248,7 +248,7 @@ class CReturn_Node : public CStatement_Node
 			{
 				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
 				{
-					std::cout << "ERROR: cannot return void type" << std::endl;
+					std::cerr << "ERROR: cannot return void type" << std::endl;
 					exit(EXIT_FAILURE);
 				}
 

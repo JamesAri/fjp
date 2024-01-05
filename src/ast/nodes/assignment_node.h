@@ -31,7 +31,7 @@ class CAssignment_Node : public CExpression_Node
 			// check if identifier is instance of CIdentifier_Node
 			if (this->mIdentifier_Node == nullptr)
 			{
-				std::cout << "ERROR: you can assign only to a variable" << std::endl;
+				std::cerr << "ERROR: you can assign only to a variable" << std::endl;
 				exit(EXIT_FAILURE);
 			}		
 		};
@@ -45,7 +45,7 @@ class CAssignment_Node : public CExpression_Node
 
 			if (index == FAILURE)
 			{
-				std::cout << "ERROR: cannot assign to an undeclared variable: " << mIdentifier_Node->mIdentifier << std::endl;
+				std::cerr << "ERROR: cannot assign to an undeclared variable: " << mIdentifier_Node->mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -54,14 +54,14 @@ class CAssignment_Node : public CExpression_Node
 			// check if identifier is not a function
 			if (identifier.type == EIdentifier_Type::PROCEDURE)
 			{
-				std::cout << "ERROR: you cannot assign to a function" << std::endl;
+				std::cerr << "ERROR: you cannot assign to a function" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
 			// check if identifier is not constant
 			if (identifier.is_constant)
 			{
-				std::cout << "ERROR: you cannot assign to a constant" << std::endl;
+				std::cerr << "ERROR: you cannot assign to a constant" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 

@@ -80,7 +80,7 @@ void output_code()
 
 	if (!file.is_open())
 	{
-		std::cout << "ERROR: invalid path " << outputFile << std::endl;
+		std::cerr << "ERROR: invalid path " << outputFile << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
 
 	if(res != 0)
 	{
-		std::cout << "ERROR: Parsing failed" << std::endl;
+		std::cerr << "ERROR: Parsing failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
