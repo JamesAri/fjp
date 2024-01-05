@@ -18,26 +18,30 @@ namespace
 {
 	void compile_function_parameter_list(parameter_list_t *parameter_list)
 	{
-		// declare function parameters
+		// increase SP by the size of arguments (parameters at this point)
+		// they will be saved to identifer table below
+		emit_INT(parameter_list->size());
+
+		// declare function parameters and retreive the stored values (arguments) 
+		// on top of the stack from the function call
 		for (auto parameter : *parameter_list)
 		{
-			parameter->Compile();
+			// Note: Do not compile the parameter here, because it will be dinamically allocated
+			// since the function call already prepared the stack for the parameters, we just need to
+			// add them to the identifier table.
+			// parameter->Compile();
 
-			std::string name = parameter->Get_Identifier_Name();
+			add_identifier(
+				parameter->Get_Identifier_Name().c_str(),
+				EIdentifier_Type::VARIABLE,
+				parameter->Get_Type(),
+				sCurrent_Block_Address,
+				sCurrent_Level,
+				sCurrent_Branch_Level,
+				parameter->Is_Constant()
+			);
 
-			int index = find_identifier(name.c_str());
-
-			if (index == FAILURE)
-			{
-				std::cout << "ERROR: compiler error, identifier not found but should have been found: " << name << std::endl;
-				exit(EXIT_FAILURE);
-			}
-
-			const TIdentifier identifier = sIdentifier_Table[index];
-
-			// when function is called, value for the declared function parameters 
-			// will be on top of the stack, so we retrieve them one by one
-			emit_STO(sCurrent_Level - identifier.level, identifier.address);
+			sCurrent_Block_Address++;
 		}
 	}
 
@@ -65,6 +69,25 @@ namespace
 		mark_scope_identifiers_as_deleted(sCurrent_Level);
 			
 		sCurrent_Level--;
+	}
+
+	void retrieve_value_from_return()
+	{
+		// 3 for control structuers of the previous function call and 1 for the return value = 4
+		// since all our types are of size 1, this is fine for now, 
+		// but with introduction of arrays, this will change
+		emit_INT(4);
+		// [SB, DB, PC, return_value] |
+
+		// this pops the return value from the stack--> decreases SP by 1
+		// this value is saved at the first address of the previous function call frame (control structure)
+		emit_STO(0, sCurrent_Block_Address);
+		// [return_value (SB), DB, PC] | [return_value]
+
+		// go back over the previous function call control structures -> decrease SP by 3
+		// but also increase SP by 1 because we want to retrieve the return value
+		emit_INT(-3 + 1);
+		// [return_value (SB)] | [DB, PC, return_value]
 	}
 }
 
@@ -100,7 +123,6 @@ class CFunction_Node : public CStatement_Node
 				std::cout << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
 				exit(EXIT_FAILURE);
 			}
-
 
 			// Save the address of the JMP instruction below
 			int jmp_instruction_address = sCode_Length;
@@ -144,7 +166,6 @@ class CFunction_Call_Node : public CExpression_Node
 		{
 			std::cout << "CFunction_Call_Node::Compile()" << std::endl;
 			
-			// check if identifier is declared
 			int index = find_identifier(mIdentifier_Node->mIdentifier.c_str());
 
 			if (index == FAILURE)
@@ -155,23 +176,24 @@ class CFunction_Call_Node : public CExpression_Node
 
 			TIdentifier identifier = sIdentifier_Table[index];
 
-			// check if identifier is not a variable
 			if (identifier.type == EIdentifier_Type::VARIABLE)
 			{
 				std::cout << "ERROR: you cannot call a variable: " << mIdentifier_Node->mIdentifier << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
-			// check if number of arguments matches number of parameters
 			if (mArgument_List->size() != identifier.number_of_parameters)
 			{
 				std::cout << "ERROR: number of arguments does not match number of the function parameters: " << identifier.name << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
-			// Compile arguments:
+			// First we want to compile the function arguments.
+			// This will just push every statement value onto stack and
+			// the function definition has instructions that will retrieve these
+			// values.
 		
-			// 3 to skip over control structures when call is made
+			// - increase SP by 3 to skip over control structures when call is made
 			emit_INT(3);
 
 			for (auto argument : *mArgument_List)
@@ -179,13 +201,22 @@ class CFunction_Call_Node : public CExpression_Node
 				argument->Compile();
 			}
 
-			// Return back where we were -> 3 from skipping control structures and mArgument_List->size()
-			// from generated experssions on the stack.
-			// When call is made, function body will pop the arguments.
+			// Return back where we were:
+			// - decrease SP by 3 to skip over control structures
+			// - decrease SP by argument list size to skip over generated expression 
+			// 	 values on the stack
 			emit_INT(-(3 + mArgument_List->size()));
 
 			// Emit function call instruction:
 			emit_CAL(sCurrent_Level - identifier.level, identifier.address);
+
+			// Now if this function has non-void type, we want to retrieve the 
+			// return value from the previous function call frame and push it on the stack:
+
+			if (identifier.data_type != EData_Type::VOID_TYPE)
+			{
+				retrieve_value_from_return();
+			}
 		};
 };
 
@@ -213,14 +244,16 @@ class CReturn_Node : public CStatement_Node
 
 			if (mExpression_Node)
 			{
-				// check if return value isn't void type
-
 				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
 				{
 					std::cout << "ERROR: cannot return void type" << std::endl;
 					exit(EXIT_FAILURE);
 				}
-				// TODO: move correctly stack
+
+				// push the value on top of the stack after the control structures, 
+				// function call will retrieve that value
+				emit_INT(3 - sCurrent_Block_Address);
+
 				mExpression_Node->Compile();
 			}
 

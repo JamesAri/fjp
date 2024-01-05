@@ -44,6 +44,8 @@ class CExpression_Node : public CStatement_Node
 // used when expression value is not retrieved and needs to be removed from the stack
 // example: 
 // 1+1; 				(expression value not retrieved, 2 hanging in the stack) 
+// OR
+// a = b = 1;			(assignment is an expression, so this will result with hanging 1 on the top of the stack)
 // VS 
 // int var = 1 + 1; 	(expression value retrieved from declaration)
 class CExpression_Only_Node : public CStatement_Node
@@ -65,9 +67,12 @@ class CExpression_Only_Node : public CStatement_Node
 			std::cout << "CExpression_Only_Node::Compile()" << std::endl;
 			
 			mExpression_Node->Compile();
-			
-			// decreases stack pointer by 1 - removes expression value from the stack
-			emit_INT(-1);
+
+			if (mExpression_Node->Get_Data_Type() != EData_Type::VOID_TYPE)
+			{
+				// decreases stack pointer by 1 - removes non-void expression value from the stack
+				emit_INT(-1);
+			}
 		};
 };
 
