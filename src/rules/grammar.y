@@ -11,6 +11,8 @@
 #include "tokens.h"
 // definitions with type structures
 #include "types.h"
+// definitions with operators
+#include "operators.h"
 // pl0 definitions
 #include "pl0.h"
 
@@ -248,22 +250,22 @@ expression_value:
 
 expression_operation:
     expression '=' expression							{$$ = new CAssignment_Node($1, $3);}
-    | expression '+' expression							{}
-    | expression '-' expression							{}
-    | expression '*' expression							{}
-    | expression '/' expression							{}
-    | expression '%' expression							{}
-    | expression LOGICAL_AND expression					{}
-    | expression LOGICAL_OR expression					{}
-    | expression '>' expression							{}
-    | expression GREATER_EQUAL expression				{}
-    | expression '<' expression							{}
-    | expression LESS_EQUAL expression					{}
-    | expression EQUAL expression						{}
-    | expression NOT_EQUAL expression					{}
-    | '+' expression %prec U_PLUS						{}
-    | '-' expression %prec U_MINUS						{}
-    | '!' expression									{}
+    | expression '+' expression							{$$ = new CArithmetic_Operation_Node($1, $3, EArithmetic_Operation::ADD);}
+    | expression '-' expression							{$$ = new CArithmetic_Operation_Node($1, $3, EArithmetic_Operation::SUB);}
+    | expression '*' expression							{$$ = new CArithmetic_Operation_Node($1, $3, EArithmetic_Operation::MUL);}
+    | expression '/' expression							{$$ = new CArithmetic_Operation_Node($1, $3, EArithmetic_Operation::DIV);}
+    | expression '%' expression							{$$ = new CArithmetic_Operation_Node($1, $3, EArithmetic_Operation::MOD);}
+    | expression LOGICAL_AND expression					{$$ = new CLogical_Operation_Node($1, $3, ELogical_Operation::AND);}
+    | expression LOGICAL_OR expression					{$$ = new CLogical_Operation_Node($1, $3, ELogical_Operation::OR);}
+    | expression EQUAL expression						{$$ = new CRelational_Operation_Node($1, $3, ERelational_Operation::EQUAL);}
+    | expression NOT_EQUAL expression					{$$ = new CRelational_Operation_Node($1, $3, ERelational_Operation::NOT_EQUAL);}
+    | expression '<' expression							{$$ = new CRelational_Operation_Node($1, $3, ERelational_Operation::LESS_THAN);}
+    | expression LESS_EQUAL expression					{$$ = new CRelational_Operation_Node($1, $3, ERelational_Operation::LESS_THAN_EQUAL);}
+    | expression '>' expression							{$$ = new CRelational_Operation_Node($1, $3, ERelational_Operation::GREATER_THAN);}
+    | expression GREATER_EQUAL expression				{$$ = new CRelational_Operation_Node($1, $3, ERelational_Operation::GREATER_THAN_EQUAL);}
+    | '+' expression %prec U_PLUS						{$$ = new CUnary_Operation_Node($2, EUnary_Operation::PLUS);}
+    | '-' expression %prec U_MINUS						{$$ = new CUnary_Operation_Node($2, EUnary_Operation::MINUS);}
+    | '!' expression									{$$ = new CUnary_Operation_Node($2, EUnary_Operation::NOT);}
     ;
 
 /////////////// 

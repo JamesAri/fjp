@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "common.h"
+
 #include "statement_node.h"
 #include "expression_node.h"
 
@@ -250,7 +252,7 @@ class CReturn_Node : public CStatement_Node
 					exit(EXIT_FAILURE);
 				}
 
-				// push the value on top of the stack after the control structures, 
+				// push the value on top of the stack just after the control structures, 
 				// function call will retrieve that value
 				emit_INT(3 - sCurrent_Block_Address);
 

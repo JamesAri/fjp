@@ -1,18 +1,15 @@
-int a = 111, b = 222;
+bool a = true;
+bool b = false;
 
-int main(int argc)
+int main()
 {
-	int x;
-	if (444)
+	int x = 5;
+	int b = -x;
+	if (b || a)
 	{
-		x = a;
+		x = 666;
 	}
-	if (555)
-	{
-		int x = 444;
-	}
-
-	return x;
+	return b;
 }
 
-main(77777);
+main();

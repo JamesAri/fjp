@@ -20,7 +20,13 @@ class CExpression_Node : public CStatement_Node
 	public:
 
 		CExpression_Node()
-			: mData_Type(EData_Type::UNKOWN_TYPE), mIs_Constant(true)
+			: mData_Type(EData_Type::UNKNOWN_TYPE), mIs_Constant(true)
+		{
+			//
+		};
+
+		CExpression_Node(const CExpression_Node &expression)
+			: mData_Type(expression.mData_Type), mIs_Constant(expression.mIs_Constant)
 		{
 			//
 		};

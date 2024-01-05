@@ -74,20 +74,23 @@ namespace PL0
 	constexpr instruction_t STA = 17;   
 	constexpr instruction_t PLD = 18;
 	constexpr instruction_t PST = 19;
-
-	constexpr operation_t NEG =  1;
-	constexpr operation_t ADD =  2;
-	constexpr operation_t SUB =  3;
-	constexpr operation_t MUL =  4;
-	constexpr operation_t DIV =  5;
-	constexpr operation_t MOD =  6;
-	constexpr operation_t ODD =  7;
-	constexpr operation_t EQ  =  8;
-	constexpr operation_t NE  =  9;
-	constexpr operation_t LT  = 10;
-	constexpr operation_t GE  = 11;
-	constexpr operation_t GT  = 12;
-	constexpr operation_t LE  = 13;
+	
+	namespace Operations
+	{
+		constexpr operation_t NEG =  1;
+		constexpr operation_t ADD =  2;
+		constexpr operation_t SUB =  3;
+		constexpr operation_t MUL =  4;
+		constexpr operation_t DIV =  5;
+		constexpr operation_t MOD =  6;
+		constexpr operation_t ODD =  7;
+		constexpr operation_t EQ  =  8;
+		constexpr operation_t NE  =  9;
+		constexpr operation_t LT  = 10;
+		constexpr operation_t GE  = 11;
+		constexpr operation_t GT  = 12;
+		constexpr operation_t LE  = 13;
+	}
 }
 
 

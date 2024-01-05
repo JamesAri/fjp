@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "common.h"
+
 #include "tokens.h"
 #include "types.h"
 
@@ -54,7 +56,7 @@ class CIdentifier_Node : public CExpression_Node
 					std::cout << "ERROR: cannot use void type as an expression: " << identifier.name << std::endl;
 					exit(EXIT_FAILURE);
 				default:
-					std::cout << "ERROR: unknown identifier type " << identifier.type << std::endl;
+					std::cout << "ERROR: unknown identifier type " << identifier.name << std::endl;
 					exit(EXIT_FAILURE);
 			}
 		};

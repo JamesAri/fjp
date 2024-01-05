@@ -4,17 +4,17 @@
 // inclusive
 constexpr unsigned int Max_Identifier_Length = 31;
 
-enum EData_Type
+enum class EData_Type
 {
 	INT_TYPE,
 	FLOAT_TYPE,
 	CHAR_TYPE,
 	BOOL_TYPE,
 	VOID_TYPE,
-	UNKOWN_TYPE
+	UNKNOWN_TYPE
 };
 
-enum EIdentifier_Type
+enum class EIdentifier_Type
 {
 	VARIABLE,
 	PROCEDURE
