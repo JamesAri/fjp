@@ -6,11 +6,7 @@
 class CStatement_Node
 {
 	public:
-
-		virtual void Compile() = 0;
-		
-		virtual ~CStatement_Node() = default;
-
+	
 		virtual void Update_Break_Statements(unsigned int address)
 		{
 			//
@@ -20,6 +16,10 @@ class CStatement_Node
 		{
 			//
 		};
+		
+		virtual void Compile() = 0;
+		
+		virtual ~CStatement_Node() = default;
 };
 
 class CEmpty_Statement_Node : public CStatement_Node
