@@ -31,6 +31,16 @@ class CIf_Node : public CStatement_Node
 		CStatement_Node *mIf_Statement_Node;
 		CStatement_Node *mElse_Statement_Node;
 
+		void Validate_Compile()
+		{
+			// check if conditions is not of a void type
+			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot use 'void' type in if condition" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
+
 	public:
 
 		CIf_Node(CExpression_Node *condition, CStatement_Node *if_statement, CStatement_Node *else_statement = nullptr)
@@ -69,13 +79,6 @@ class CIf_Node : public CStatement_Node
 			
 			// LIT(boolean) value onto stack
 			mCondition_Node->Compile();
-
-			// check if conditions is not of a void type
-			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-			{
-				std::cerr << "ERROR: cannot use 'void' type in if condition" << std::endl;
-				exit(EXIT_FAILURE);
-			}
 
 			// save JMC instruction address
 			unsigned int jmc_instruction_address = sCode_Length; 

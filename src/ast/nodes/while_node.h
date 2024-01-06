@@ -16,6 +16,16 @@ class CWhile_Node : public CStatement_Node
 		CExpression_Node *mCondition_Node;
 		CStatement_Node *mStatement_Node;
 
+		void Validate_Compile()
+		{
+			// check if condition is not of a void type
+			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot use 'void' type in while loop condition" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
+
 	public:
 
 		CWhile_Node(CExpression_Node *condition, CStatement_Node *statement)
@@ -42,21 +52,8 @@ class CWhile_Node : public CStatement_Node
 		{
 			std::cout << "CWhile_Node::Compile()" << std::endl;
 
-			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-			{
-				std::cerr << "ERROR: cannot use 'void' type in while loop condition" << std::endl;
-				exit(EXIT_FAILURE);
-			}
-
 			unsigned int condition_address = sCode_Length;
 			mCondition_Node->Compile();
-
-			// check if condition is not of a void type
-			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-			{
-				std::cerr << "ERROR: cannot use 'void' type in while loop condition" << std::endl;
-				exit(EXIT_FAILURE);
-			}
 
 			unsigned int jmc_instruction_address = sCode_Length; 
 			emit_JMC(0);			

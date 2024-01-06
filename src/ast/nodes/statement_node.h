@@ -16,7 +16,7 @@ class CStatement_Node
 		{
 			//
 		};
-		
+
 		virtual void Compile() = 0;
 		
 		virtual ~CStatement_Node() = default;

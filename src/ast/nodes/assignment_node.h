@@ -19,29 +19,9 @@ class CAssignment_Node : public CExpression_Node
 
 		CIdentifier_Node *mIdentifier_Node;
 		CExpression_Node *mExpression_Node;
-	public:
 
-		CAssignment_Node(CExpression_Node *identifier, CExpression_Node *expression)
+		void Validate_Compile(TIdentifier identifier)
 		{
-			this->mIdentifier_Node = dynamic_cast<CIdentifier_Node*>(identifier);
-			this->mExpression_Node = expression;
-
-			// check if identifier is instance of CIdentifier_Node
-			if (this->mIdentifier_Node == nullptr)
-			{
-				std::cerr << "ERROR: you can assign only to a variable" << std::endl;
-				exit(EXIT_FAILURE);
-			}		
-		};
-
-		void Compile() override
-		{
-			std::cout << "CAssignment_Node::Compile()" << std::endl;
-
-			TIdentifier identifier = mIdentifier_Node->Find_Declared_Identifier(
-				"ERROR: cannot assign to an undeclared variable: " + mIdentifier_Node->mIdentifier
-			);
-
 			// check if identifier is not of a void type
 			if (identifier.data_type == EData_Type::VOID_TYPE)
 			{
@@ -63,24 +43,51 @@ class CAssignment_Node : public CExpression_Node
 				exit(EXIT_FAILURE);
 			}
 
-			// compile the expression
-			mExpression_Node->Compile();
-
 			// check if expression is not void
 			if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
 			{
 				std::cerr << "ERROR: cannot assign 'void' type to a variable" << std::endl;
 				exit(EXIT_FAILURE);
 			}
+		}
+
+	public:
+
+		CAssignment_Node(CExpression_Node *identifier, CExpression_Node *expression)
+		{
+			this->mIdentifier_Node = dynamic_cast<CIdentifier_Node*>(identifier);
+			this->mExpression_Node = expression;
+
+			// check if identifier is instance of CIdentifier_Node
+			if (this->mIdentifier_Node == nullptr)
+			{
+				std::cerr << "ERROR: you can assign only to a variable" << std::endl;
+				exit(EXIT_FAILURE);
+			}		
+		};
+		
+
+		void Compile() override
+		{
+			std::cout << "CAssignment_Node::Compile()" << std::endl;
+
+			TIdentifier identifier = mIdentifier_Node->Find_Declared_Identifier(
+				"ERROR: cannot assign to an undeclared variable: " + mIdentifier_Node->mIdentifier
+			);
+
+			// compile the expression
+			mExpression_Node->Compile();
 
 			// store the value of the expression in the identifier
 			emit_STO(sCurrent_Level - identifier.level, identifier.address);
 			
-
 			// since this is still an expression, we need to push the value of the identifier onto the stack
 			// this for example allows us to do following: ident1 = ident2 = expression
 			// all we need to do is load the value back onto the stack
 			emit_LOD(sCurrent_Level - identifier.level, identifier.address);
+
+			// validate the assignment
+			Validate_Compile(identifier);
 		};
 };
 

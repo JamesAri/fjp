@@ -119,7 +119,7 @@ class CFunction_Node : public CStatement_Node
 		{	
 			std::cout << "CFunction_Node::Compile()" << std::endl;
 
-			if (!mBody_Block_Node)
+			if (mBody_Block_Node == nullptr)
 			{
 				std::cerr << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
 				exit(EXIT_FAILURE);

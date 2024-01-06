@@ -21,6 +21,19 @@ class CFor_Loop_Node : public CStatement_Node
 
 		CStatement_Node *mBody_Node;
 
+		void Validate_Compile()
+		{
+			if (mCondition_Node != nullptr)
+			{
+				// check if condition is not of a void type
+				if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: cannot use 'void' type in for loop condition" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+			}
+		}
+
 	public:
 
 		CFor_Loop_Node(CStatement_Node *init_statement, CExpression_Node *condition, CExpression_Only_Node *update_expression)
@@ -62,13 +75,6 @@ class CFor_Loop_Node : public CStatement_Node
 				if(mCondition_Node != nullptr)
 				{
 					mCondition_Node->Compile();
-
-					// check if condition is not of a void type
-					if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-					{
-						std::cerr << "ERROR: cannot use 'void' type in for loop condition" << std::endl;
-						exit(EXIT_FAILURE);
-					}
 				}
 				else
 				{

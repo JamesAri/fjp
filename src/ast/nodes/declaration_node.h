@@ -23,6 +23,19 @@ class CDeclaration_Node : public CStatement_Node
 		// nullptr when declaration is without definition
 		CExpression_Node *mExpression_Node;
 
+		void Validate_Compile()
+		{
+			if (mExpression_Node != nullptr)
+			{
+				// check if expression is not void
+				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: cannot assign 'void' type to a variable" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+			}
+		}
+
 	public:
 
 		CDeclaration_Node(CType_Node *type, CIdentifier_Node *identifier, const bool is_constant, CExpression_Node *expression = nullptr)
@@ -77,17 +90,10 @@ class CDeclaration_Node : public CStatement_Node
 			// increment stack pointer by 1 (allocate space for the variable)
 			emit_INT(1); // NOTE: this might change with the introduction of arrays
 
-			if (mExpression_Node)
+			if (mExpression_Node != nullptr)
 			{
 				// push expression value onto stack
 				mExpression_Node->Compile();
-				
-				// check if expression is not void
-				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-				{
-					std::cerr << "ERROR: cannot assign 'void' type to a variable" << std::endl;
-					exit(EXIT_FAILURE);
-				}
 			}
 			else
 			{
@@ -98,6 +104,8 @@ class CDeclaration_Node : public CStatement_Node
 			// store the default or expression value in the variable
 			// level must be relative (note for Mira: precti si prednasku o generovani kodu)
 			emit_STO(sCurrent_Level - level, address);
+
+			Validate_Compile();
 		};
 };
 

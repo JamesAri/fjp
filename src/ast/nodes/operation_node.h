@@ -47,7 +47,7 @@ class CUnary_Operation_Node : public CExpression_Node
 					emit_OPR(PL0::Operations::NEG);
 					break;
 				case EUnary_Operation::PLUS:
-					// do nothing, correct value is already on the stack
+					// do nothing, correct value is already on top of the stack
 					break;
 				case EUnary_Operation::NOT:
 					emit_LIT(0);

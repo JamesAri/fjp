@@ -16,6 +16,15 @@ class CDo_While_Node : public CStatement_Node
 		CExpression_Node *mCondition_Node;
 		CStatement_Node *mStatement_Node;
 
+		void Validate_Compile()
+		{
+			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot use 'void' type in do while loop condition" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
+
 	public:
 
 		CDo_While_Node(CExpression_Node *condition, CStatement_Node *statement)
@@ -33,12 +42,6 @@ class CDo_While_Node : public CStatement_Node
 		{
 			std::cout << "CDo_While_Node::Compile()" << std::endl;
 
-			if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-			{
-				std::cerr << "ERROR: cannot use 'void' type in do while loop condition" << std::endl;
-				exit(EXIT_FAILURE);
-			}
-
 			unsigned int body_address = sCode_Length;
 
 			branch_compile(mStatement_Node);
@@ -50,6 +53,8 @@ class CDo_While_Node : public CStatement_Node
 			emit_OPR(PL0::Operations::EQ);
 			
 			emit_JMC(body_address);
+
+			Validate_Compile();
 		};
 };
 
