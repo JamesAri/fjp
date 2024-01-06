@@ -59,7 +59,6 @@ unsigned int sIdentifier_Count = 0;
 	CStatement_Node* 			statement_node;
 	CExpression_Node* 			expression_node;
 	CExpression_Only_Node* 		expression_only_node;
-	CBranch_Body_Node* 			branch_body_node;
 
 	// AST nodes
 	CBlock_Node* 				block_node;
@@ -92,9 +91,8 @@ unsigned int sIdentifier_Count = 0;
 	expression_list_t* 			argument_list;
 }
 
-%type <statement_node>			statement for_init_statement
+%type <statement_node>			statement for_init_statement branch_body
 %type <expression_node>			expression expression_value expression_operation for_expression
-%type <branch_body_node> 		branch_body
 
 %type <block_node>				program statement_block
 
@@ -229,8 +227,8 @@ statement:
     ;
 
 branch_body:
-    statement								{$$ = new CBranch_Body_Node($1);}
-    | statement_block						{$$ = new CBranch_Body_Node($1);}
+    statement								{$$ = $1;}
+    | statement_block						{$$ = $1;}
     ;
 
 /////////////// 

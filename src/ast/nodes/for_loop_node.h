@@ -5,7 +5,6 @@
 
 #include "statement_node.h"
 #include "expression_node.h"
-#include "branch_body_node.h"
 
 #include "pl0.h"
 #include "generators.h"
@@ -20,7 +19,7 @@ class CFor_Loop_Node : public CStatement_Node
 		// executed after each body iteration
 		CExpression_Only_Node *mUpdate_Expression_Node;
 
-		CBranch_Body_Node *mBody_Node;
+		CStatement_Node *mBody_Node;
 
 	public:
 
@@ -30,7 +29,7 @@ class CFor_Loop_Node : public CStatement_Node
 			//
 		};
 
-		void Set_Body(CBranch_Body_Node *body)
+		void Set_Body(CStatement_Node *body)
 		{
 			mBody_Node = body;
 		};
