@@ -24,6 +24,11 @@ class CDo_While_Node : public CStatement_Node
 			//
 		};
 
+		void Update_Break_Statements(unsigned int address) override
+		{
+			mStatement_Node->Update_Break_Statements(address);
+		};
+
 		void Compile() override
 		{
 			std::cout << "CDo_While_Node::Compile()" << std::endl;

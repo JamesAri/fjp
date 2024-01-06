@@ -1,0 +1,12 @@
+int main()
+{
+	int a;
+	for(a = 660; a < 1000; a = a + 1)
+	{
+		if (a == 666) break;
+	}
+	return a;
+}
+
+// should return 666
+main();

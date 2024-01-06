@@ -13,6 +13,8 @@
 #include "types.h"
 // definitions with operators
 #include "operators.h"
+// definitions with identifiers
+#include "identifiers.h"
 // pl0 definitions
 #include "pl0.h"
 
@@ -56,6 +58,8 @@ unsigned int sIdentifier_Count = 0;
 	// Abstract nodes
 	CStatement_Node* 			statement_node;
 	CExpression_Node* 			expression_node;
+	CExpression_Only_Node* 		expression_only_node;
+	CBranch_Body_Node* 			branch_body_node;
 
 	// AST nodes
 	CBlock_Node* 				block_node;
@@ -88,8 +92,9 @@ unsigned int sIdentifier_Count = 0;
 	expression_list_t* 			argument_list;
 }
 
-%type <statement_node>			statement branch_body for_init_statement
+%type <statement_node>			statement for_init_statement
 %type <expression_node>			expression expression_value expression_operation for_expression
+%type <branch_body_node> 		branch_body
 
 %type <block_node>				program statement_block
 
@@ -110,6 +115,7 @@ unsigned int sIdentifier_Count = 0;
 %type <do_while_node>			do_while_statement
 
 %type <for_loop_node>			for_statement for_header
+%type <expression_only_node>	for_expression_only
 
 %type <statement_list>			statement_list
 %type <parameter_list>			parameter_list function_parameters
@@ -206,7 +212,7 @@ statement_block:
     ;
 
 statement:
-    ';'										{/*x*/}
+    ';'										{$$ = new CEmpty_Statement_Node();}
     | expression ';'						{$$ = new CExpression_Only_Node($1);}
     | single_declaration ';'				{$$ = $1;}
     | multi_declaration ';'					{$$ = $1;}
@@ -214,17 +220,17 @@ statement:
     | switch_statement						{}
     | case_statement						{}
     | while_statement						{$$ = $1;}
-    | do_while_statement ';'				{}
-    | for_statement							{}
+    | do_while_statement ';'				{$$ = $1;}
+    | for_statement							{$$ = $1;}
     | function								{$$ = $1;}
     | return_statement ';'					{$$ = $1;}
-	| BREAK ';'								{/*x*/}
-    | CONTINUE ';'							{/*x*/}
+	| BREAK ';'								{$$ = new CBreak_Node();}
+    | CONTINUE ';'							{$$ = new CContinue_Node();}
     ;
 
 branch_body:
-    statement								{$$ = $1;}
-    | statement_block						{$$ = $1;}
+    statement								{$$ = new CBranch_Body_Node($1);}
+    | statement_block						{$$ = new CBranch_Body_Node($1);}
     ;
 
 /////////////// 
@@ -347,18 +353,23 @@ for_statement:
     ;
 
 for_header:
-    FOR '(' for_init_statement ';' for_expression ';' for_expression ')'	{$$ = new CFor_Loop_Node($3, $5, $7, $9);}
+    FOR '(' for_init_statement ';' for_expression ';' for_expression_only ')'	{$$ = new CFor_Loop_Node($3, $5, $7);}
     ;
 
 for_init_statement: 
-	/* e */												{/*TODO*/}
+	/* e */												{$$ = nullptr;}
     | single_declaration								{$$ = $1;}
-    | expression										{$$ = $1;}
+    | expression										{$$ = new CExpression_Only_Node($1);}
     ;
 
 for_expression: 
-	/* e */												{/*TODO*/}
+	/* e */												{$$ = nullptr;}
     | expression										{$$ = $1;}
+    ;
+
+for_expression_only:
+	/* e */												{$$ = nullptr;}
+    | expression										{$$ = new CExpression_Only_Node($1);}
     ;
 
 /////////////////

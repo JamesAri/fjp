@@ -64,11 +64,18 @@ class CExpression_Node : public CStatement_Node
 
 // used when expression value is not retrieved and needs to be removed from the stack
 // example: 
-// 1+1; 				(expression value not retrieved, 2 hanging in the stack) 
+//
+// 1+1; 				binary operation is an expression and is value not retrieved (value 2 hanging on the top of stack)
 // OR
-// a = b = 1;			(assignment is an expression, so this will result with hanging 1 on the top of the stack)
+// a = b = 1;			assignment is an expression, so this will result with hanging value 1 on top of the stack
+//
 // VS 
-// int var = 1 + 1; 	(expression value retrieved from declaration)
+//
+// int var = 1 + 1; 	expression value retrieved from declaration
+// OR
+// for(; i<10;;) 		binary operation is an expression, but value is retrieved by the for-loop logic 
+//						when checking the condition - it's basically if(i<10)
+//						
 class CExpression_Only_Node : public CStatement_Node
 {
 	protected:
@@ -79,6 +86,11 @@ class CExpression_Only_Node : public CStatement_Node
 
 		CExpression_Only_Node(CExpression_Node *expression)
 			: mExpression_Node(expression)
+		{
+			//
+		};
+
+		void Update_Break_Statements(unsigned int address) override
 		{
 			//
 		};

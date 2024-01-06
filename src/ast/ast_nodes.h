@@ -15,5 +15,8 @@
 #include "nodes/while_node.h"
 #include "nodes/do_while_node.h"
 #include "nodes/for_loop_node.h"
+#include "nodes/branch_body_node.h"
+#include "nodes/continue_node.h"
+#include "nodes/break_node.h"
 
 #endif // __NODES_H_

@@ -25,7 +25,6 @@ class CValue_Node : public CExpression_Node
 		{
 			std::cout << "CValue_Node::Compile()" << std::endl;
 			
-			int val;
 			switch (mData_Type)
 			{
 				case EData_Type::INT_TYPE:

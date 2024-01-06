@@ -9,6 +9,16 @@
 
 #include "pl0.h"
 
+// IDENTIFIER STORAGE
+
+constexpr unsigned int Max_Identifier_Table_Length = 500;
+
+typedef TIdentifier identifier_table_t[Max_Identifier_Table_Length];
+
+extern identifier_table_t sIdentifier_Table;
+extern unsigned int sIdentifier_Count;
+
+
 // UTILITY FUNCTIONS
 
 // searches for identifier in specified scope and branch level and their

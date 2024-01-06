@@ -21,8 +21,6 @@ class CAssignment_Node : public CExpression_Node
 		CExpression_Node *mExpression_Node;
 	public:
 
-		CAssignment_Node() {};
-
 		CAssignment_Node(CExpression_Node *identifier, CExpression_Node *expression)
 		{
 			this->mIdentifier_Node = dynamic_cast<CIdentifier_Node*>(identifier);
@@ -77,11 +75,12 @@ class CAssignment_Node : public CExpression_Node
 
 			// store the value of the expression in the identifier
 			emit_STO(sCurrent_Level - identifier.level, identifier.address);
+			
 
 			// since this is still an expression, we need to push the value of the identifier onto the stack
 			// this for example allows us to do following: ident1 = ident2 = expression
-			// all we need to do is compile the expression again and it will be put on top of the stack
-			mExpression_Node->Compile();
+			// all we need to do is load the value back onto the stack
+			emit_LOD(sCurrent_Level - identifier.level, identifier.address);
 		};
 };
 

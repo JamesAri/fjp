@@ -30,6 +30,11 @@ class CUnary_Operation_Node : public CExpression_Node
 			//
 		}
 
+		void Update_Break_Statements(unsigned int address) override
+		{
+			//
+		};
+
 		void Compile() override
 		{
 			std::cout << "CUnary_Operation_Node::Compile()" << std::endl;

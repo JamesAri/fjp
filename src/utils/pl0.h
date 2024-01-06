@@ -120,7 +120,10 @@ struct TCode_Entry
 	bool is_float;
 };
 
+constexpr unsigned int Invalid_Address = -1;
+
 constexpr unsigned int Max_Code_Length = 10000;
+
 typedef TCode_Entry code_t[Max_Code_Length];
 
 // Global compiled code storage
@@ -134,14 +137,5 @@ extern unsigned int sCode_Length;
 
 extern unsigned int sCurrent_Block_Address;
 
-
-// IDENTIFIER STORAGE
-
-constexpr unsigned int Max_Identifier_Table_Length = 500;
-
-typedef TIdentifier identifier_table_t[Max_Identifier_Table_Length];
-
-extern identifier_table_t sIdentifier_Table;
-extern unsigned int sIdentifier_Count;
 
 #endif // __PL0_H_

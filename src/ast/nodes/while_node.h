@@ -24,6 +24,20 @@ class CWhile_Node : public CStatement_Node
 			//
 		};
 
+		void Update_Break_Statements(unsigned int address) override
+		{
+			std::cout << "CWhile_Node::Update_Break_Statements()" << std::endl;
+
+			mStatement_Node->Update_Break_Statements(address);
+		};
+
+		void Update_Continue_Statements(unsigned int address) override
+		{
+			std::cout << "CWhile_Node::Update_Continue_Statements()" << std::endl;
+
+			mStatement_Node->Update_Continue_Statements(address);
+		};
+
 		void Compile() override
 		{
 			std::cout << "CWhile_Node::Compile()" << std::endl;

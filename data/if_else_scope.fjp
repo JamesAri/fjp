@@ -1,0 +1,13 @@
+int main()
+{
+	int a = -1;
+	if (1)
+	{
+		int a = 666;
+		return a;
+	}
+	return -1;
+}
+
+// should return 666
+main();

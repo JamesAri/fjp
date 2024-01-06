@@ -5,7 +5,7 @@
 
 #include "statement_node.h"
 #include "expression_node.h"
-#include "declaration_node.h"
+#include "branch_body_node.h"
 
 #include "pl0.h"
 #include "generators.h"
@@ -15,24 +15,34 @@ class CFor_Loop_Node : public CStatement_Node
 {
 	private:
 
-		CDeclaration_Node *mDeclaration_Node;
+		CStatement_Node *mInit_Statement_Node;
 		CExpression_Node *mCondition_Node;
 		// executed after each body iteration
-		CExpression_Node *mExpression_Node;
+		CExpression_Only_Node *mUpdate_Expression_Node;
 
-		CStatement_Node *mBody_Node;
+		CBranch_Body_Node *mBody_Node;
 
 	public:
 
-		CFor_Loop_Node(CDeclaration_Node *declaration, CExpression_Node *condition, CExpression_Node *expression)
-			: mDeclaration_Node(declaration), mCondition_Node(condition), mExpression_Node(expression), mBody_Node(nullptr)
+		CFor_Loop_Node(CStatement_Node *init_statement, CExpression_Node *condition, CExpression_Only_Node *update_expression)
+			: mInit_Statement_Node(init_statement), mCondition_Node(condition), mUpdate_Expression_Node(update_expression), mBody_Node(nullptr)
 		{
 			//
 		};
 
-		void Set_Body(CStatement_Node *body)
+		void Set_Body(CBranch_Body_Node *body)
 		{
 			mBody_Node = body;
+		};
+
+		void Update_Break_Statements(unsigned int address) override
+		{
+			mBody_Node->Update_Break_Statements(address);
+		};
+
+		void Update_Continue_Statements(unsigned int address) override
+		{
+			mBody_Node->Update_Continue_Statements(address);
 		};
 
 		void Compile() override
@@ -43,16 +53,28 @@ class CFor_Loop_Node : public CStatement_Node
 			// ( •_•)>⌐■-■
 			// (⌐■_■)
 			branch_compile([&]() {
-				mDeclaration_Node->Compile();
+				if (mInit_Statement_Node != nullptr)
+				{
+					mInit_Statement_Node->Compile();
+				}
 
 				unsigned int condition_address = sCode_Length;
-				mCondition_Node->Compile();
 
-				// check if condition is not of a void type
-				if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+				if(mCondition_Node != nullptr)
 				{
-					std::cerr << "ERROR: cannot use 'void' type in for loop condition" << std::endl;
-					exit(EXIT_FAILURE);
+					mCondition_Node->Compile();
+
+					// check if condition is not of a void type
+					if (mCondition_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+					{
+						std::cerr << "ERROR: cannot use 'void' type in for loop condition" << std::endl;
+						exit(EXIT_FAILURE);
+					}
+				}
+				else
+				{
+					// if condition is not specified, then we will always produce non-zero (true) value
+					emit_LIT(1);
 				}
 
 				unsigned int jmc_instruction_address = sCode_Length; 
@@ -63,11 +85,23 @@ class CFor_Loop_Node : public CStatement_Node
 					mBody_Node->Compile();
 				}
 
-				mExpression_Node->Compile();
+				if (mUpdate_Expression_Node != nullptr)
+				{
+					mUpdate_Expression_Node->Compile();
+				}
 
 				emit_JMP(condition_address);
 
-				modify_param_2(jmc_instruction_address, sCode_Length);
+				unsigned int after_loop_address = sCode_Length;
+
+				modify_param_2(jmc_instruction_address, after_loop_address);
+
+				// update break and continue statements
+				if (mBody_Node != nullptr)
+				{
+					mBody_Node->Update_Break_Statements(after_loop_address);
+					mBody_Node->Update_Continue_Statements(condition_address);
+				}
 			});
 		};
 };

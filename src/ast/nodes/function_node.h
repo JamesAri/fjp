@@ -163,6 +163,11 @@ class CFunction_Call_Node : public CExpression_Node
 			this->mArgument_List = arguments;
 		};
 
+		void Update_Break_Statements(unsigned int address) override
+		{
+			//
+		};
+
 		void Compile() override
 		{
 			std::cout << "CFunction_Call_Node::Compile()" << std::endl;

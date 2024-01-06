@@ -39,6 +39,30 @@ class CIf_Node : public CStatement_Node
 			//
 		};
 
+		void Update_Break_Statements(unsigned int address) override
+		{
+			std::cout << "CIf_Node::Update_Break_Statements()" << std::endl;
+
+			mIf_Statement_Node->Update_Break_Statements(address);
+
+			if (mElse_Statement_Node)
+			{
+				mElse_Statement_Node->Update_Break_Statements(address);
+			}
+		};
+
+		void Update_Continue_Statements(unsigned int address) override
+		{
+			std::cout << "CIf_Node::Update_Continue_Statements()" << std::endl;
+
+			mIf_Statement_Node->Update_Continue_Statements(address);
+
+			if (mElse_Statement_Node)
+			{
+				mElse_Statement_Node->Update_Continue_Statements(address);
+			}
+		};
+
 		void Compile() override
 		{	
 			std::cout << "CIf_Node::Compile()" << std::endl;

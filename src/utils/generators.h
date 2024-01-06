@@ -166,7 +166,6 @@ inline void branch_compile(CStatement_Node *statement)
 
 	statement->Compile();
 
-
 	// mark all identifiers in current branch as deleted
 	mark_branch_identifiers_as_deleted(sCurrent_Level, sCurrent_Branch_Level);
 	

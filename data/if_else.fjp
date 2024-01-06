@@ -1,16 +1,21 @@
-void test()
-{
-
-}
+bool a = true, b = false;
 
 int main()
 {
-	int i = 0;
-	while(i < 10)
+	int ret = -1;
+	if (a || b)
 	{
-		i = i + 1;
+		if (a && b)
+		{
+			ret = -2;
+		}
+		else
+		{
+			ret = 666;
+		}
 	}
-	return i;
+	return ret;
 }
 
+// should return 666
 main();

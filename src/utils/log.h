@@ -4,7 +4,6 @@
 #include <iostream>
 #include <iomanip>
 
-
 #include "pl0.h"
 
 // converts EIdentifier_Type to string
