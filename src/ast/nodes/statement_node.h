@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "types.h"
+
 class CStatement_Node
 {
 	public:
@@ -13,6 +15,11 @@ class CStatement_Node
 		};
 
 		virtual void Update_Continue_Statements(unsigned int address)
+		{
+			//
+		};
+
+		virtual void Validate_Return_Types(EData_Type return_type)
 		{
 			//
 		};

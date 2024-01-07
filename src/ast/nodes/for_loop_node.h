@@ -57,6 +57,11 @@ class CFor_Loop_Node : public CStatement_Node
 			mBody_Node->Update_Continue_Statements(address);
 		};
 
+		void Validate_Return_Types(EData_Type return_type) override
+		{
+			mBody_Node->Validate_Return_Types(return_type);
+		};
+
 		void Compile() override
 		{
 			std::cout << "CFor_Loop_Node::Compile()" << std::endl;

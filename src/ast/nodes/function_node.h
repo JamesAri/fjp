@@ -3,10 +3,13 @@
 
 #include <iostream>
 
-#include "common.h"
+#include "log.h"
 
 #include "statement_node.h"
 #include "expression_node.h"
+#include "identifier_node.h"
+#include "declaration_node.h"
+#include "block_node.h"
 
 #include "node_lists.h"
 #include "types.h"
@@ -145,6 +148,8 @@ class CFunction_Node : public CStatement_Node
 			
 			// Overwrite JMP with correct address (after the fn definition)
 			modify_param_2(jmp_instruction_address, sCode_Length);
+
+			mBody_Block_Node->Validate_Return_Types(mReturn_Type_Node->mData_Type);
 		};
 };
 
@@ -161,11 +166,6 @@ class CFunction_Call_Node : public CExpression_Node
 		{
 			this->mIdentifier_Node = identifier;
 			this->mArgument_List = arguments;
-		};
-
-		void Update_Break_Statements(unsigned int address) override
-		{
-			//
 		};
 
 		void Compile() override
@@ -246,6 +246,30 @@ class CReturn_Node : public CStatement_Node
 		CReturn_Node(CExpression_Node *expression) : mExpression_Node(expression)
 		{
 			//
+		};
+
+		void Validate_Return_Types(EData_Type return_type) override
+		{
+			if (mExpression_Node == nullptr)
+			{
+				if (return_type != EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: function has " << data_type_to_string(return_type) 
+					<< " return type, but no return value was provided" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+			}
+			else
+			{
+				if (mExpression_Node->Get_Data_Type() != return_type)
+				{
+					std::cerr << "ERROR: function return type does not match the return value type:" << std::endl;
+					std::cerr << "	function has " << data_type_to_string(return_type)
+					<< " return type, but return value has " << data_type_to_string(mExpression_Node->Get_Data_Type()) 
+					<< " data type" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+			}
 		};
 
 		void Compile() override

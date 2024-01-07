@@ -90,11 +90,6 @@ class CExpression_Only_Node : public CStatement_Node
 			//
 		};
 
-		void Update_Break_Statements(unsigned int address) override
-		{
-			//
-		};
-
 		virtual void Compile() override
 		{	
 			std::cout << "CExpression_Only_Node::Compile()" << std::endl;

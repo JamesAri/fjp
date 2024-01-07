@@ -18,6 +18,8 @@ class CBreak_Node : public CStatement_Node
 
 	public:
 
+		static unsigned int gCounter;
+
 		CBreak_Node(): mJmp_Address(Invalid_Address), mJmp_Instruction_Address(Invalid_Address)
 		{
 			//
@@ -25,6 +27,11 @@ class CBreak_Node : public CStatement_Node
 
 		void Update_Break_Statements(unsigned int address) override
 		{
+			if(mJmp_Address == Invalid_Address)
+			{
+				gCounter--;
+			}
+
 			mJmp_Address = address;
 			
 			if (mJmp_Instruction_Address == Invalid_Address)
@@ -38,6 +45,8 @@ class CBreak_Node : public CStatement_Node
 		void Compile() override
 		{
 			std::cout << "CBreak_Node::Compile()" << std::endl;
+
+			gCounter++;
 
 			mJmp_Instruction_Address = sCode_Length;
 			emit_JMP(Invalid_Address);

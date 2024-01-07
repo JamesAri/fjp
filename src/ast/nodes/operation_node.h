@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "log.h"
-#include "common.h"
 
 #include "statement_node.h"
 #include "expression_node.h"
@@ -22,6 +21,16 @@ class CUnary_Operation_Node : public CExpression_Node
 		CExpression_Node *mExpression_Node;
 		EUnary_Operation mOperation;
 
+		void Validate_Compile()
+		{
+			if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: cannot perform unary operations on 'void' type" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
+		
+
 	public:
 
 		CUnary_Operation_Node(CExpression_Node *expression, const EUnary_Operation &operation)
@@ -29,11 +38,6 @@ class CUnary_Operation_Node : public CExpression_Node
 		{
 			//
 		}
-
-		void Update_Break_Statements(unsigned int address) override
-		{
-			//
-		};
 
 		void Compile() override
 		{
@@ -54,6 +58,8 @@ class CUnary_Operation_Node : public CExpression_Node
 					emit_OPR(PL0::Operations::EQ);
 					break;
 			}
+
+			Validate_Compile();
 		}
 };
 
@@ -83,21 +89,9 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 
 		EArithmetic_Operation mOperation;
 
-	public:
 
-		CArithmetic_Operation_Node(CExpression_Node *lhs, CExpression_Node *rhs, const EArithmetic_Operation &operation)
-			: CBinary_Operation_Node(lhs, rhs), mOperation(operation)
+		void Validate_Compile()
 		{
-			//
-		}
-
-		virtual void Compile() override
-		{
-			std::cout << "CArithmetic_Operation_Node::Compile()" << std::endl;
-
-			mLhs_Node->Compile();
-			mRhs_Node->Compile();
-
 			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
 			{
 				std::cerr << "ERROR: cannot perform arithmetic operations on 'void' type" << std::endl;
@@ -112,6 +106,22 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 				std::cout << "Right hand side data type: " << data_type_to_string(mRhs_Node->Get_Data_Type()) << std::endl;
 				exit(EXIT_FAILURE);
 			}
+		}
+
+	public:
+
+		CArithmetic_Operation_Node(CExpression_Node *lhs, CExpression_Node *rhs, const EArithmetic_Operation &operation)
+			: CBinary_Operation_Node(lhs, rhs), mOperation(operation)
+		{
+			//
+		}
+
+		virtual void Compile() override
+		{
+			std::cout << "CArithmetic_Operation_Node::Compile()" << std::endl;
+
+			mLhs_Node->Compile();
+			mRhs_Node->Compile();
 
 			// we take over the data type of the left hand side expression
 			this->mData_Type = mLhs_Node->Get_Data_Type();
@@ -134,6 +144,8 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 					emit_OPR(PL0::Operations::MOD);
 					break;
 			}
+
+			Validate_Compile();
 		}
 };
 
@@ -142,6 +154,16 @@ class CLogical_Operation_Node : public CBinary_Operation_Node
 	private:
 
 		ELogical_Operation mOperation;
+
+
+		void Validate_Compile()
+		{
+			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: logical operation failed, could not convert from 'void' to 'bool'" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
 
 	public:
 
@@ -154,12 +176,6 @@ class CLogical_Operation_Node : public CBinary_Operation_Node
 		virtual void Compile() override
 		{
 			std::cout << "CLogical_Operation_Node::Compile()" << std::endl;
-
-			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-			{
-				std::cerr << "ERROR: logical operation failed, could not convert from 'void' to 'bool'" << std::endl;
-				exit(EXIT_FAILURE);
-			}
 
 			int lhs_jmc_instruction_address, rhs_jmp_instruction_address;
 
@@ -223,6 +239,7 @@ class CLogical_Operation_Node : public CBinary_Operation_Node
 					break;
 			}
 
+			Validate_Compile();
 		}
 };
 
@@ -231,6 +248,16 @@ class CRelational_Operation_Node : public CBinary_Operation_Node
 	private:
 
 		ERelational_Operation mOperation;
+
+
+		void Validate_Compile()
+		{
+			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				std::cerr << "ERROR: compare operation failed, could not convert from 'void' to 'bool'" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+		}
 
 	public:
 
@@ -247,12 +274,6 @@ class CRelational_Operation_Node : public CBinary_Operation_Node
 			mLhs_Node->Compile();
 
 			mRhs_Node->Compile();
-
-			if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-			{
-				std::cerr << "ERROR: compare operation failed, could not convert from 'void' to 'bool'" << std::endl;
-				exit(EXIT_FAILURE);
-			}
 
 			switch (mOperation)
 			{
@@ -275,6 +296,8 @@ class CRelational_Operation_Node : public CBinary_Operation_Node
 					emit_OPR(PL0::Operations::GE);
 					break;
 			}
+
+			Validate_Compile();
 		}
 };
 

@@ -15,11 +15,8 @@
 
 class CBlock_Node : public CStatement_Node
 {	
-	private:
-	
-		statement_list_t *mStatement_List;
-
 	public:
+		statement_list_t *mStatement_List;
 
 		CBlock_Node()
 		{
@@ -47,6 +44,19 @@ class CBlock_Node : public CStatement_Node
 
 			// terminate program
 			emit_RET();
+
+			// validate break and continue statements
+			if (CBreak_Node::gCounter != 0)
+			{
+				std::cerr << "ERROR: " << CBreak_Node::gCounter << " 'break' statements outside of a loop" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+
+			if(CContinue_Node::gCounter != 0)
+			{
+				std::cerr << "ERROR: " << CContinue_Node::gCounter << " 'continue' statements outside of a loop" << std::endl;
+				exit(EXIT_FAILURE);
+			}
 		};
 
 		void Compile() override
@@ -61,8 +71,6 @@ class CBlock_Node : public CStatement_Node
 
 		void Update_Break_Statements(unsigned int address) override
 		{
-			std::cout << "CBlock_Node::Update_Break_Statements()" << std::endl;
-
 			for (statement_list_t::iterator it = mStatement_List->begin(); it != mStatement_List->end(); ++it)
 			{
 				(*it)->Update_Break_Statements(address);
@@ -71,11 +79,17 @@ class CBlock_Node : public CStatement_Node
 
 		void Update_Continue_Statements(unsigned int address) override
 		{
-			std::cout << "CBlock_Node::Update_Continue_Statements()" << std::endl;
-
 			for (statement_list_t::iterator it = mStatement_List->begin(); it != mStatement_List->end(); ++it)
 			{
 				(*it)->Update_Continue_Statements(address);
+			}
+		};
+
+		void Validate_Return_Types(EData_Type return_type) override
+		{
+			for (statement_list_t::iterator it = mStatement_List->begin(); it != mStatement_List->end(); ++it)
+			{
+				(*it)->Validate_Return_Types(return_type);
 			}
 		};
 };

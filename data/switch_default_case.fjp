@@ -1,0 +1,15 @@
+int main()
+{
+	switch(3)
+	{
+		case 1:
+			return 1;
+		case 2:
+			return 2;
+		default:
+			return 666;
+	}
+}
+
+// should return 666
+main();

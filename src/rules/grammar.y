@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#include "common.h"
+
 // definitions with all the possible nodes
 #include "ast_nodes.h"
 // definitions with token structures
@@ -46,6 +48,9 @@ unsigned int sCurrent_Block_Address;
 // Create identifier table and initialize count
 identifier_table_t sIdentifier_Table;
 unsigned int sIdentifier_Count = 0;
+
+unsigned int CBreak_Node::gCounter = 0;
+unsigned int CContinue_Node::gCounter = 0;
 %}
 
 %locations
@@ -81,6 +86,9 @@ unsigned int sIdentifier_Count = 0;
 
 	CFor_Loop_Node* 			for_loop_node;
 
+	CSwitch_Node* 				switch_node;
+	CCase_Statement_Node* 		case_statement_node;
+
 	// Token containers
 	TToken_Value 				token_value;
 	TToken_Identifier 			token_identifier;
@@ -114,6 +122,9 @@ unsigned int sIdentifier_Count = 0;
 
 %type <for_loop_node>			for_statement for_header
 %type <expression_only_node>	for_expression_only
+
+%type <switch_node>				switch_statement
+%type <case_statement_node>		case_statement
 
 %type <statement_list>			statement_list
 %type <parameter_list>			parameter_list function_parameters
@@ -323,12 +334,12 @@ identifier:
 // SWITCH RULES
 /////////////// 
 switch_statement:
-    SWITCH '(' expression ')' branch_body				{}
+    SWITCH '(' expression ')' branch_body				{$$ = new CSwitch_Node($3, $5);}
     ;
 
 case_statement:
-    CASE expression ':' statement						{}
-    | DEFAULT ':' statement								{}
+    CASE expression ':' statement						{$$ = new CCase_Statement_Node($2, $4);}
+    | DEFAULT ':' statement								{$$ = new CCase_Statement_Node($3);}
     ;
 
 //////////////

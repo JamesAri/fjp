@@ -38,6 +38,11 @@ class CDo_While_Node : public CStatement_Node
 			mStatement_Node->Update_Break_Statements(address);
 		};
 
+		void Validate_Return_Types(EData_Type return_type) override
+		{
+			mStatement_Node->Validate_Return_Types(return_type);
+		};
+
 		void Compile() override
 		{
 			std::cout << "CDo_While_Node::Compile()" << std::endl;

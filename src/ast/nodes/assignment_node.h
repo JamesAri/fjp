@@ -3,8 +3,6 @@
 
 #include <stdio.h>
 
-#include "common.h"
-
 #include "statement_node.h"
 #include "expression_node.h"
 #include "identifier_node.h"

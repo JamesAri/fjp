@@ -3,8 +3,6 @@
 
 #include <iostream>
 
-#include "common.h"
-
 #include "expression_node.h"
 
 #include "tokens.h"
