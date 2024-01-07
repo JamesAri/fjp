@@ -34,7 +34,7 @@ class CValue_Node : public CExpression_Node
 					emit_LIT(std::stof(mToken_Value));
 					break;
 				case EData_Type::CHAR_TYPE:
-					emit_LIT(mToken_Value[0]);
+					emit_LIT(mToken_Value[1]);
 					break;
 				case EData_Type::BOOL_TYPE:
 					emit_LIT(mToken_Value[0] == 't' ? 1 : 0);

@@ -19,4 +19,7 @@
 #include "nodes/break_node.h"
 #include "nodes/switch_node.h"
 
+#include "nodes/read_node.h"
+#include "nodes/write_node.h"
+
 #endif // __NODES_H_

@@ -78,6 +78,8 @@ class CCase_Statement_Node : public CStatement_Node
 			std::cout << "CCase_Statement_Node::Compile()" << std::endl;
 
 			std::cerr << "ERROR: cannot compile case statement outside of switch statement" << std::endl;
+
+			exit(EXIT_FAILURE);
 		};
 		
 };
@@ -104,7 +106,7 @@ class CSwitch_Node : public CStatement_Node
 
 			if (case_statement_node == nullptr)
 			{
-				std::cout << "ERROR: switch body is missing case statement" << std::endl;
+				std::cerr << "ERROR: switch body is missing case statement" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 			

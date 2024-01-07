@@ -165,6 +165,12 @@ unsigned int CContinue_Node::gCounter = 0;
 %token RETURN
 
 ////////////
+// READ / WRITE
+////////////
+%token READ
+%token WRITE
+
+////////////
 // OPERATORS
 ////////////
 %token LOGICAL_AND
@@ -226,8 +232,8 @@ statement:
     | single_declaration ';'				{$$ = $1;}
     | multi_declaration ';'					{$$ = $1;}
     | if_statement							{$$ = $1;}
-    | switch_statement						{}
-    | case_statement						{}
+    | switch_statement						{$$ = $1;}
+    | case_statement						{$$ = $1;}
     | while_statement						{$$ = $1;}
     | do_while_statement ';'				{$$ = $1;}
     | for_statement							{$$ = $1;}
@@ -235,6 +241,8 @@ statement:
     | return_statement ';'					{$$ = $1;}
 	| BREAK ';'								{$$ = new CBreak_Node();}
     | CONTINUE ';'							{$$ = new CContinue_Node();}
+	| READ  '(' identifier ')' ';'			{$$ = new CRead_Node($3);}
+	| WRITE '(' expression ')' ';'			{$$ = new CWrite_Node($3);}
     ;
 
 branch_body:

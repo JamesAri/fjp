@@ -1,0 +1,34 @@
+char in1, in2, in3;
+read(in1);
+read(in2);
+read(in3);
+
+write('y');
+write('o');
+write('u');
+write('r');
+
+write(' ');
+
+write('i');
+write('n');
+write('p');
+write('u');
+write('t');
+
+write(' ');
+
+write('w');
+write('a');
+write('s');
+write(':');
+
+write(' ');
+
+write(in1);
+write(in2);
+write(in3);
+
+// input: 	666
+// output: 	your input was: 666
+

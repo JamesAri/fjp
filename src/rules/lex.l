@@ -60,6 +60,15 @@ LINE_COMMENT "//"(.)*
 <INITIAL>"return"   return RETURN;
 
 %{
+////////////////
+// READ/WRITE
+//////////////// 
+%}
+
+<INITIAL>"read"    return READ;
+<INITIAL>"write"   return WRITE;
+
+%{
 ////////////////// 
 // OPERATOR TOKENS
 ////////////////// 

@@ -1,0 +1,6 @@
+int x = 333, y = 333;
+
+
+x = x + y;
+
+// should compile at global scope
