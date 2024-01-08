@@ -9,6 +9,8 @@
 
 - zajistit automatickou konverzi mezi celociselnou hodnotou a realnym cislem, napr. kdyz nekdo udela `int a = 1.1;`, tak se ulozi hodnota `1`.
 
+- dodelat statickou typovou kontrolu
+
 
 
 --- 
