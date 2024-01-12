@@ -1,9 +1,10 @@
 %{
-#include "y.tab.hpp"
 // definitions with all the possible nodes
 #include "ast_nodes.h"
 #include "common.h"
 #include "types.h"
+
+#include "y.tab.hpp"
 
 // forward declaration of our utility functions (defined at the bottom)
 void save_value(YYSTYPE *);

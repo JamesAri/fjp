@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Flex version required: 2.6.x^"
+echo "Bison version required: 3.0.x^"
+
 mkdir -p build >/dev/null 2>&1
 cd build
 
@@ -32,6 +35,10 @@ win_build()
 	echo "Windows build"
 	flex_bison_build
 	g++ $gcc_flags $gcc_files -o compiler.exe
+	if [ $? -eq 0 ]; then
+		echo "Build finished"
+		echo "Run with: ./build/compiler.exe <source_file>"
+	fi
 }
 
 osx_build() 
@@ -39,6 +46,21 @@ osx_build()
 	echo "Mac OS X build"
 	flex_bison_build
 	g++ $gcc_flags $gcc_files -o compiler -ll
+	if [ $? -eq 0 ]; then
+		echo "Build finished"
+		echo "Run with: ./build/compiler <source_file>"
+	fi
+}
+
+linux_build()
+{
+	echo "Linux build"
+	flex_bison_build
+	g++ $gcc_flags $gcc_files -o compiler -ll
+	if [ $? -eq 0 ]; then
+		echo "Build finished"
+		echo "Run with: ./build/compiler <source_file>"
+	fi
 }
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -46,12 +68,9 @@ if [ "$(uname)" == "Darwin" ]; then
 	osx_build
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 	# GNU/Linux platform
-	echo "TODO: GNU/Liux build"
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-	# 32 bits Windows NT platform
-	win_build
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
-	# 64 bits Windows NT platform
+	linux_build
+elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ] || [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+	# 32 & 64 bits Windows NT platforms
 	win_build
 fi
 
