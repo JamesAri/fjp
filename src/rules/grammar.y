@@ -22,7 +22,7 @@
 
 // includes needed for pure parser and location support
 #include "y.tab.hpp"
-#include "lex.yy.h"
+#include "lex.yy.hpp"
 
 // reade more about yylex: https://www.ibm.com/docs/en/zos/2.1.0?topic=works-yyparse-yylex
 // forward declaration of yylex for compatibility reasons
@@ -56,8 +56,8 @@ unsigned int CContinue_Node::gCounter = 0;
 %locations
 
 // deprecated directive
-/* %pure-parser */ 
-%define api.pure full
+%pure-parser 
+/* %define api.pure full */
 
 %union {
 	// Abstract nodes
@@ -439,6 +439,11 @@ void yyerror (YYLTYPE *locp, char const *msg)
 			 locp->last_line, locp->last_column,
 			 msg);
 }
+
+/* void yyerror(char const *s)
+{
+  fprintf(stderr, "ERROR line %d: %s\n", yylloc.first_line, s);
+} */
 
 int yywrap(void)
 {

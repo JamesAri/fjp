@@ -2,6 +2,7 @@
 #define __IDENTIFIERS_H_
 
 #include <iostream>
+#include <string.h>
 
 #include "common.h"
 

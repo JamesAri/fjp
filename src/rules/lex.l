@@ -1,8 +1,7 @@
 %{
+#include "y.tab.hpp"
 // definitions with all the possible nodes
 #include "ast_nodes.h"
-
-#include "y.tab.hpp"
 #include "common.h"
 #include "types.h"
 
@@ -18,7 +17,7 @@ static void update_loc(YYLTYPE *, char *);
 %option warn noyywrap
 %option bison-bridge bison-locations
 /* Creates file taht contains function prototypes, extern variables, and types used by the scanner */
-%option header-file="lex.yy.h"
+%option header-file="lex.yy.hpp"
 
 %s BLOCK_COMMENT
 

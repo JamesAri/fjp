@@ -13,13 +13,13 @@ grammar_file="../src/rules/grammar.y"
 gcc_files="-I ../src/ast -I ../src/utils y.tab.cpp lex.yy.cpp ../src/main.cpp"
 
 # -DYYDEBUG=1 for bison verbose messages
-gcc_flags="-std=c++11 -DYYDEBUG=1"
+gcc_flags="-std=gnu++11 -DYYDEBUG=1"
 
 if [ "$1" == "debug" ]; then
     gcc_flags+=" -g -Wall"
 fi
 
-common()
+flex_bison_build()
 {
 	# Bison
 	bison -o y.tab.cpp -d $grammar_file 
@@ -30,16 +30,14 @@ common()
 win_build() 
 {
 	echo "Windows build"
-	common
-	# GCC
+	flex_bison_build
 	g++ $gcc_flags $gcc_files -o compiler.exe
 }
 
 osx_build() 
 {
 	echo "Mac OS X build"
-	common
-	# GCC
+	flex_bison_build
 	g++ $gcc_flags $gcc_files -o compiler -ll
 }
 
