@@ -3,12 +3,6 @@
 
 ## TODOs:
 
--  emulovat datove typy, tzn. kdyz nekdo napr. pouzije datovej typ `char`, aby to bylo v rozmezi (-128, 127) - emulovat overflow
-
-- zajistit kontrolu predavanych argumentu pri volani fce, napr. do `void fn(int)` muzes predavat jen `int` nebo `char`.
-
-- zajistit automatickou konverzi mezi celociselnou hodnotou a realnym cislem, napr. kdyz nekdo udela `int a = 1.1;`, tak se ulozi hodnota `1`.
-
 - dodelat statickou typovou kontrolu
 
 
