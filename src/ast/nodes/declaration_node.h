@@ -94,6 +94,13 @@ class CDeclaration_Node : public CStatement_Node
 			{
 				// push expression value onto stack
 				mExpression_Node->Compile();
+
+				// if variable has non-float type, but the expression has float type, round down to the nearest integer
+				if (mExpression_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE && mType_Node->mData_Type != EData_Type::FLOAT_TYPE)
+				{
+					emit_LIT(1);
+					emit_OPR(PL0::Operations::DIV);
+				}
 			}
 			else
 			{

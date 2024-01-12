@@ -1,0 +1,74 @@
+// won't work with n > 9
+const char NEW_LINE = 10;
+
+void print_rod_movement(char disk, char from_rod, char to_rod)
+{
+	write(NEW_LINE); // new line
+	write(' ');
+	write('M');
+	write('o');
+	write('v');
+	write('e');
+	write(' ');
+	write('d');
+	write('i');
+	write('s');
+	write('k');
+	write(' ');
+	write(disk);
+	write(' ');
+	write('f');
+	write('r');
+	write('o');
+	write('m');
+	write(' ');
+	write('r');
+	write('o');
+	write('d');
+	write(' ');
+	write(from_rod);
+	write(' ');
+	write('t');
+	write('o');
+	write(' ');
+	write('r');
+	write('o');
+	write('d');
+	write(' ');
+	write(to_rod);
+}
+
+void towerOfHanoi(int n, char from_rod, char to_rod, char aux_rod)
+{
+    if (n == 1)
+    {
+        print_rod_movement('1', from_rod, to_rod);
+        return;
+    }
+    towerOfHanoi(n-1, from_rod, aux_rod, to_rod);
+	print_rod_movement(n + '0', from_rod, to_rod);
+    towerOfHanoi(n-1, aux_rod, to_rod, from_rod);
+}
+
+int main()
+{
+	int n;
+	// read is not an expression (has syntax as function, but is a keyword...)
+	// so for example, you can't do this: n = read(n) - 0;
+	read(n);
+	n = n - '0';
+	if (n < 1)
+	{
+		write('E');
+		write('r');
+		write('r');
+		write('o');
+		write('r');
+		write('!');
+		return 1;
+	}
+	towerOfHanoi(n, 'A', 'C', 'B');
+	return 0;
+}
+
+main();

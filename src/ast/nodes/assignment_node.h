@@ -76,6 +76,13 @@ class CAssignment_Node : public CExpression_Node
 			// compile the expression
 			mExpression_Node->Compile();
 
+			// if variable has non-float type, but the expression has float type, round down to the nearest integer
+			if (mExpression_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE && identifier.data_type != EData_Type::FLOAT_TYPE)
+			{
+				emit_LIT(1);
+				emit_OPR(PL0::Operations::DIV);
+			}
+
 			// store the value of the expression in the identifier
 			emit_STO(sCurrent_Level - identifier.level, identifier.address);
 			

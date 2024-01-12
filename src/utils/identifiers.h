@@ -97,7 +97,7 @@ inline void add_identifier(
 	const unsigned int level, 
 	const unsigned int branch_level, 
 	const bool is_constant,
-	const unsigned int number_of_parameters = 0
+	function_parameter_list_t *parameter_list = nullptr
 	)
 {	
 	if (sIdentifier_Count >= Max_Identifier_Table_Length)
@@ -120,7 +120,7 @@ inline void add_identifier(
 	identifier->level = level;
 	identifier->branch_level = branch_level;
 	identifier->is_constant = is_constant;
-	identifier->number_of_parameters = number_of_parameters;
+	identifier->parameter_list = parameter_list;
 	
 	for (unsigned int i = 0; i < Max_Identifier_Length; i++)
 	{

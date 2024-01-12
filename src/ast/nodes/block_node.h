@@ -85,11 +85,11 @@ class CBlock_Node : public CStatement_Node
 			}
 		};
 
-		void Validate_Return_Types(EData_Type return_type) override
+		void Update_Return_Type(EData_Type return_type) override
 		{
 			for (statement_list_t::iterator it = mStatement_List->begin(); it != mStatement_List->end(); ++it)
 			{
-				(*it)->Validate_Return_Types(return_type);
+				(*it)->Update_Return_Type(return_type);
 			}
 		};
 };

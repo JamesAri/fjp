@@ -1,0 +1,10 @@
+// should return true
+int check_conversion(const int num) {
+	if (num == 3) {
+		return 666;
+	}
+	return 0;
+}
+
+// should return 666
+check_conversion(3.14);

@@ -69,13 +69,13 @@ class CIf_Node : public CStatement_Node
 			}
 		};
 
-		void Validate_Return_Types(EData_Type return_type) override
+		void Update_Return_Type(EData_Type return_type) override
 		{
-			mIf_Statement_Node->Validate_Return_Types(return_type);
+			mIf_Statement_Node->Update_Return_Type(return_type);
 
 			if (mElse_Statement_Node)
 			{
-				mElse_Statement_Node->Validate_Return_Types(return_type);
+				mElse_Statement_Node->Update_Return_Type(return_type);
 			}
 		};
 

@@ -44,9 +44,9 @@ class CWhile_Node : public CStatement_Node
 			mStatement_Node->Update_Continue_Statements(address);
 		};
 
-		void Validate_Return_Types(EData_Type return_type) override
+		void Update_Return_Type(EData_Type return_type) override
 		{
-			mStatement_Node->Validate_Return_Types(return_type);
+			mStatement_Node->Update_Return_Type(return_type);
 		};
 
 		void Compile() override

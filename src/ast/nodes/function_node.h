@@ -101,16 +101,33 @@ class CFunction_Node : public CStatement_Node
 	
 		CType_Node *mReturn_Type_Node;
 		CIdentifier_Node *mIdentifier_Node;
-		declaration_list_t *mParameter_List;
+		declaration_list_t *mParameter_Declaration_List;
 
 		CBlock_Node *mBody_Block_Node;
+
+		function_parameter_list_t *mFunction_Parameter_List;
+
+
+		void Create_Parameter_List()
+		{
+			mFunction_Parameter_List = new function_parameter_list_t();
+
+			for (auto parameter : *mParameter_Declaration_List)
+			{
+				TFunction_Parameter fn_parameter;
+				fn_parameter.data_type = parameter->Get_Type();
+				fn_parameter.is_constant = parameter->Is_Constant();
+				mFunction_Parameter_List->push_back(fn_parameter);
+			}
+
+		};
 	
 	public:
 
 		CFunction_Node(CType_Node *return_type, CIdentifier_Node *identifier, declaration_list_t *parameters)
-			: mReturn_Type_Node(return_type), mIdentifier_Node(identifier), mParameter_List(parameters), mBody_Block_Node(nullptr)
+			: mReturn_Type_Node(return_type), mIdentifier_Node(identifier), mParameter_Declaration_List(parameters), mBody_Block_Node(nullptr)
 		{
-			//
+			Create_Parameter_List();
 		};
 
 		void Set_Body(CBlock_Node *body)
@@ -141,15 +158,24 @@ class CFunction_Node : public CStatement_Node
 				sCurrent_Level,
 				sCurrent_Branch_Level,
 				false,
-				mParameter_List->size()
+				mFunction_Parameter_List
 			);
 			
-			compile_scope(mBody_Block_Node, mParameter_List);
+			mBody_Block_Node->Update_Return_Type(mReturn_Type_Node->mData_Type);
+
+			compile_scope(mBody_Block_Node, mParameter_Declaration_List);
+
+			// generate ret instruction if function has void return type and user doesn't
+			// explicitly return from the function
+			// this instruction will be ignored if user provided return statement
+			if (mReturn_Type_Node->mData_Type == EData_Type::VOID_TYPE)
+			{
+				emit_RET();
+			}
 			
 			// Overwrite JMP with correct address (after the fn definition)
 			modify_param_2(jmp_instruction_address, sCode_Length);
 
-			mBody_Block_Node->Validate_Return_Types(mReturn_Type_Node->mData_Type);
 		};
 };
 
@@ -185,7 +211,7 @@ class CFunction_Call_Node : public CExpression_Node
 				exit(EXIT_FAILURE);
 			}
 
-			if (mArgument_List->size() != identifier.number_of_parameters)
+			if (mArgument_List->size() != identifier.parameter_list->size())
 			{
 				std::cerr << "ERROR: number of arguments does not match number of the function parameters: " << identifier.name << std::endl;
 				exit(EXIT_FAILURE);
@@ -199,8 +225,12 @@ class CFunction_Call_Node : public CExpression_Node
 			// - increase SP by 3 to skip over control structures when call is made
 			emit_INT(3);
 
-			for (auto argument : *mArgument_List)
+			// iterate over arguments and parameters and check if data types are compatible
+			for(int i = 0; i < mArgument_List->size(); i++)
 			{
+				CExpression_Node *argument = (*mArgument_List)[i];
+				TFunction_Parameter parameter = (*identifier.parameter_list)[i];
+
 				argument->Compile();
 
 				// check if argument is not void
@@ -209,8 +239,15 @@ class CFunction_Call_Node : public CExpression_Node
 					std::cerr << "ERROR: cannot pass 'void' type as an argument" << std::endl;
 					exit(EXIT_FAILURE);
 				}
-			}
 
+				// if parameter has non-float type, but the argument is of float type, round down to the nearest integer
+				if (argument->Get_Data_Type() == EData_Type::FLOAT_TYPE && parameter.data_type != EData_Type::FLOAT_TYPE)
+				{
+					emit_LIT(1);
+					emit_OPR(PL0::Operations::DIV);
+				}
+			}
+			
 			// Return back where we were:
 			// - decrease SP by 3 to skip over control structures
 			// - decrease SP by argument list size to skip over generated expression 
@@ -234,6 +271,7 @@ class CReturn_Node : public CStatement_Node
 {
 	private:
 
+		EData_Type mReturn_Type;
 		CExpression_Node *mExpression_Node;
 
 	public:
@@ -248,25 +286,16 @@ class CReturn_Node : public CStatement_Node
 			//
 		};
 
-		void Validate_Return_Types(EData_Type return_type) override
+		void Update_Return_Type(EData_Type return_type) override
 		{
+			mReturn_Type = return_type;
+
 			if (mExpression_Node == nullptr)
 			{
 				if (return_type != EData_Type::VOID_TYPE)
 				{
 					std::cerr << "ERROR: function has " << data_type_to_string(return_type) 
 					<< " return type, but no return value was provided" << std::endl;
-					exit(EXIT_FAILURE);
-				}
-			}
-			else
-			{
-				if (mExpression_Node->Get_Data_Type() != return_type)
-				{
-					std::cerr << "ERROR: function return type does not match the return value type:" << std::endl;
-					std::cerr << "	function has " << data_type_to_string(return_type)
-					<< " return type, but return value has " << data_type_to_string(mExpression_Node->Get_Data_Type()) 
-					<< " data type" << std::endl;
 					exit(EXIT_FAILURE);
 				}
 			}
@@ -289,6 +318,13 @@ class CReturn_Node : public CStatement_Node
 				emit_INT(3 - sCurrent_Block_Address);
 
 				mExpression_Node->Compile();
+
+				// if variable has non-float type, but the expression has float type, round down to the nearest integer
+				if (mExpression_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE && mReturn_Type != EData_Type::FLOAT_TYPE)
+				{
+					emit_LIT(1);
+					emit_OPR(PL0::Operations::DIV);
+				}
 			}
 
 			emit_RET();

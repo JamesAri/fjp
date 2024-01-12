@@ -50,7 +50,7 @@ struct TIdentifier
 	// Should be removed in the future.
 	bool is_deleted; 
 	// used for procedures only
-	unsigned int number_of_parameters;
+	function_parameter_list_t* parameter_list;
 };
 
 #endif // __TYPES_NODE_H_

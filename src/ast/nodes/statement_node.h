@@ -19,7 +19,7 @@ class CStatement_Node
 			//
 		};
 
-		virtual void Validate_Return_Types(EData_Type return_type)
+		virtual void Update_Return_Type(EData_Type return_type)
 		{
 			//
 		};
