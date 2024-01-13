@@ -58,7 +58,6 @@ unsigned int CContinue_Node::gCounter = 0;
 %locations
 
 // deprecated directive
-/* %pure-parser  */
 %define api.pure full
 %define parse.error detailed
 

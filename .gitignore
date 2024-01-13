@@ -2,7 +2,7 @@
 build/
 
 # ignore executables
-*.pl0
+out.pl0
 *.tab
 
 .vscode/*
