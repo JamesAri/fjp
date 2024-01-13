@@ -1,57 +1,48 @@
-# KIV/FJP compiler - making C-like clone
+# Struktura projektu
 
+Projekt je realizován jako C++ knihovna.
 
-## TODOs:
+```
+.
+├── src/
+│   ├── ast/
+│   │   ├── nodes/
+│   │   │   ├── assignment_node.h
+│   │   │   ├── block_node.h
+│   │   │   └── ...
+│   │   └── ast_nodes.h
+│   ├── rules/
+│   │   ├── grammar.y
+│   │   └── lex.l
+│   └── utils
+├── data/
+│   ├── complex.fjp
+│   ├── complex.pl0
+│   ├── echo.fjp
+│   └── ...
+├── .gitignore
+├── build.sh
+├── compiler.exe
+├── doc.pdf
+└── README.md
+```
 
-- dodelat statickou typovou kontrolu
+`nodes` - jednotlivé uzly AST stromu
 
+`ast_nodes.h` - hromadný include
 
+`grammar.y` - vstupní soubor pro nástroj bison
 
---- 
+`lex.l` - vstupní soubor pro nástroj flex
 
+`utils` - definice struktur, funkcí pro logování, údržbu tabulky symbolů, definice pro PL/0, ...
 
-	dal nejak nabrat 5-10b ze seznamu dole + doplnit test casy
+`data` - *use-cases* vytovřeného jazyka (uvnitř jsou 3 přeložené programy do rozšířené PL/0 - 
+soboury jsou zakončené koncovkou `pl0`)
 
-### 1b
-- další typ cyklu
-- ternární operátor
-- paralelní přiřazení
-- datový typ string (s operátory pro spojování řětezců)
+`build.sh` -  skript pro překlad
 
-### 2b
-- příkaz GOTO
-- datový typ ratio (s celočíselnými instrukcemi)
-- složený datový typ (pro nas `struct`)
-- pole a práce s jeho prvky
-- operátor pro porovnání řetězců
-- objekty bez polymorfismu
-- anonymní vnitřní funkce (lambda výrazy)
+`compiler.exe` - přeložený program spustitelný v prostředí Windows
 
-### 3b
-- dynamicky přiřazovaná paměť - práce s ukazateli
-- parametry předávané odkazem
-- objektové konstrukce s polymorfním chováním
-- instanceof operátor
-- anonymní vnitřní funkce (lambda výrazy) které lze předat jako parametr
-- mechanismus zpracování výjimek
-	
-### ?b
-- Další rozšíření je možno doplnit po konzultaci, s ohodnocením podle odhadnuté náročnosti.
+`doc.pdf` - elektronická forma této dokumentace
 
-
-
-## Tools installation guide for macOS:
-
-Tools and requirements:
-- flex 2.6.4 Apple(flex-34)
-- bison (GNU Bison) 3.8.2
-- g++ with C++11 features
-
-### flex
-`brew install flex`
-
-### bison
-`brew install bison@3.8 `
-
-### gcc/g++ with C++11 features
-`brew install gcc`

@@ -37,7 +37,7 @@ win_build()
 	g++ $gcc_flags $gcc_files -o compiler.exe
 	if [ $? -eq 0 ]; then
 		echo "Build finished"
-		echo "Run with: ./build/compiler.exe <source_file>"
+		echo "Run with: ./build/compiler.exe <source_file> [-o <output_file>]"
 	fi
 }
 
