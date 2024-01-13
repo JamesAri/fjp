@@ -12,12 +12,12 @@ extern int yydebug;
 extern FILE* yyin;
 
 // Root node of the AST - created in scanner
-extern CBlock_Node* sRootNode;
+extern CBlock_Node* sRoot_Node;
 
-// Source file to be parsed
-std::string sourceFile;
+// Source file to be parsed - defined in common, so we can use it in the scanner error function
+std::string sSource_File;
 // Output file
-std::string outputFile = "out.pl0";
+std::string output_file = "out.pl0";
 
 // Enables bison debug messages
 void enable_bison_debug_messages()
@@ -35,14 +35,14 @@ void parse_argv(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	sourceFile = argv[1];
+	sSource_File = argv[1];
 
 	// check if file exists
-	FILE* file = fopen(sourceFile.c_str(), "r");
+	FILE* file = fopen(sSource_File.c_str(), "r");
 
 	if (file == NULL)
 	{
-		std::cout << "File " << sourceFile << " does not exist." << std::endl;
+		std::cout << "File " << sSource_File << " does not exist." << std::endl;
 		exit(EXIT_FAILURE);
 	}
 	{
@@ -61,7 +61,7 @@ void parse_argv(int argc, char* argv[])
 		{
 			if (i + 1 < argc)
 			{
-				outputFile = argv[i + 1];
+				output_file = argv[i + 1];
 			}
 			else
 			{
@@ -76,11 +76,11 @@ void parse_argv(int argc, char* argv[])
 void output_code()
 {
 	std::ofstream file;
-	file.open(outputFile);
+	file.open(output_file);
 
 	if (!file.is_open())
 	{
-		std::cerr << "ERROR: invalid path " << outputFile << std::endl;
+		std::cerr << "ERROR: invalid path " << output_file << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 {	
 	parse_argv(argc, argv);
 	
-	yyin = fopen(sourceFile.c_str(), "r");
+	yyin = fopen(sSource_File.c_str(), "r");
 
 	int res = yyparse();
 
@@ -108,11 +108,11 @@ int main(int argc, char* argv[])
 
 	if(res != 0)
 	{
-		std::cerr << "ERROR: Parsing failed" << std::endl;
+		std::cerr << "error: syntax parsing failed due to unrecognized token" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
-	sRootNode->Compile_Init();
+	sRoot_Node->Compile_Init();
 	
 	output_code();
 

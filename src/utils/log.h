@@ -4,8 +4,21 @@
 #include <iostream>
 #include <iomanip>
 
+#include "common.h"
+#include "location.h"
+
 #include "identifiers.h"
 #include "pl0.h"
+
+inline void error_message(const TLocation &locp, std::string msg)
+{
+	std::cerr << sSource_File << ":" << locp.first_line << ":" << locp.first_column << ": error: " << msg << std::endl;
+}
+
+inline void error_message(const TLocation &&locp, std::string msg)
+{
+	error_message(locp, msg);
+}
 
 // converts EIdentifier_Type to string
 inline std::string identifier_type_to_string(EIdentifier_Type type)

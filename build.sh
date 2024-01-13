@@ -15,7 +15,7 @@ grammar_file="../src/rules/grammar.y"
 # gcc definitions
 gcc_files="-I ../src/ast -I ../src/utils y.tab.cpp lex.yy.cpp ../src/main.cpp"
 
-# -DYYDEBUG=1 for bison verbose messages
+# -DYYDEBUG=1 for bison verbose messages and debugging
 gcc_flags="-std=gnu++11 -DYYDEBUG=1"
 
 if [ "$1" == "debug" ]; then

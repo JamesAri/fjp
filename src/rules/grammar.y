@@ -3,9 +3,11 @@
 #include <stdlib.h>
 
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "common.h"
+#include "location.h"
 
 // definitions with all the possible nodes
 #include "ast_nodes.h"
@@ -35,7 +37,7 @@ int yywrap(void);
 void yyerror (YYLTYPE *, char const *);
 
 // root node of the program
-CBlock_Node *sRootNode = nullptr;
+CBlock_Node *sRoot_Node = nullptr;
 
 // Create code storage and generator helpers
 code_t sCode;
@@ -58,6 +60,7 @@ unsigned int CContinue_Node::gCounter = 0;
 // deprecated directive
 /* %pure-parser  */
 %define api.pure full
+%define parse.error detailed
 
 %union {
 	// Abstract nodes
@@ -210,8 +213,8 @@ unsigned int CContinue_Node::gCounter = 0;
 // ROOT
 //////////
 program: 
-	/* e */									{$$ = NULL; sRootNode = new CBlock_Node();}
-    | statement_list						{$$ = NULL; sRootNode = new CBlock_Node($1);}
+	/* e */									{$$ = NULL; sRoot_Node = new CBlock_Node();}
+    | statement_list						{$$ = NULL; sRoot_Node = new CBlock_Node($1);}
     ;
 
 statement_list:
@@ -434,16 +437,8 @@ return_statement:
 
 void yyerror (YYLTYPE *locp, char const *msg)
 {
-	fprintf (stderr, "%d.%d-%d.%d: %s\n",
-			 locp->first_line, locp->first_column,
-			 locp->last_line, locp->last_column,
-			 msg);
+	error_message({locp->first_line, locp->first_column}, msg);
 }
-
-/* void yyerror(char const *s)
-{
-  fprintf(stderr, "ERROR line %d: %s\n", yylloc.first_line, s);
-} */
 
 int yywrap(void)
 {
