@@ -1,0 +1,50 @@
+int _switch(int a)
+{
+	// int to char conversion
+	// note: break statements not allowed, they are automatically inserted
+	switch (a)
+	{
+		case '0':
+			return 0;
+		case '1':
+			return 1;
+		case '2':
+			return 2;
+		case '3':
+			return 3;
+		default:
+			return 4;
+	}
+}
+
+bool _if_else(const char a)
+{
+	int val = _switch(a);
+	if (val < 3) return true; 		
+	else if (val == 3) return false;
+	else if (val > 3) return true;
+	else return true; // unreachable
+}
+
+void _while(char a)
+{
+	while (_if_else(a)) // fn called as an expression
+	{
+		a = a + 1;
+	}
+	write(a); // should print 3
+	
+	// void -> return not needed
+}
+
+int main()
+{
+	for (char a = -5; a < 5; a = a + 1)
+	{
+		_while(a); // should be executed once and print '3'
+		return 0; // we can return in for-loop branches, even if it's not the last statement
+	}
+	return -1;
+}
+
+main(); // called as an expression, but return value is ignored

@@ -2,3 +2,6 @@ int main()
 {
 	return 3.4;
 }
+
+// should push 3 on top of the stack
+main();

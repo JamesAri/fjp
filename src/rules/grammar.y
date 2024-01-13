@@ -63,12 +63,10 @@ unsigned int CContinue_Node::gCounter = 0;
 %define parse.error detailed
 
 %union {
-	// Abstract nodes
 	CStatement_Node* 			statement_node;
 	CExpression_Node* 			expression_node;
 	CExpression_Only_Node* 		expression_only_node;
 
-	// AST nodes
 	CBlock_Node* 				block_node;
 
 	CDeclaration_Node* 			declaration_node;
@@ -132,15 +130,6 @@ unsigned int CContinue_Node::gCounter = 0;
 %type <statement_list>			statement_list
 %type <parameter_list>			parameter_list function_parameters
 %type <argument_list>			argument_list function_argmunets
-
-/* %destructor {
-    if ($$ != NULL) 
-	{
-        delete $$;
-        $$ = NULL;
-    }
-} */
-/* <block_node> <statement_node> */
 
 /////////////
 // DATA TYPES
