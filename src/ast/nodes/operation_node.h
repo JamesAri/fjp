@@ -71,6 +71,42 @@ class CBinary_Operation_Node : public CExpression_Node
 		CExpression_Node *mLhs_Node;
 		CExpression_Node *mRhs_Node;
 
+		void Determine_Data_Type()
+		{
+			EData_Type operation_data_type = EData_Type::UNKNOWN;
+
+			// float > int > char > bool > void
+
+			if (mLhs_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE)
+			{
+				operation_data_type = EData_Type::FLOAT_TYPE;
+			}
+			else if (mLhs_Node->Get_Data_Type() == EData_Type::INT_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::INT_TYPE)
+			{
+				operation_data_type = EData_Type::INT_TYPE;
+			}
+			else if (mLhs_Node->Get_Data_Type() == EData_Type::CHAR_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::CHAR_TYPE)
+			{
+				operation_data_type = EData_Type::CHAR_TYPE;
+			}
+			else if (mLhs_Node->Get_Data_Type() == EData_Type::BOOL_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::BOOL_TYPE)
+			{
+				operation_data_type = EData_Type::BOOL_TYPE;
+			}
+			else if (mLhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE || mRhs_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+			{
+				operation_data_type = EData_Type::VOID_TYPE;
+			}
+
+			if (operation_data_type == EData_Type::UNKNOWN)
+			{
+				std::cerr << "ERROR: could not determine data type for binary operation" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+
+			this->mData_Type = operation_data_type;
+		}
+
 	public:
 
 		// data type will be known when both expressions are compiled
@@ -97,16 +133,6 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 				std::cerr << "ERROR: cannot perform arithmetic operations on 'void' type" << std::endl;
 				exit(EXIT_FAILURE);
 			}
-			// TODO: not sure if I want this
-
-			// check if both expressions have compatible data types
-			// if (mLhs_Node->Get_Data_Type() != mRhs_Node->Get_Data_Type())
-			// {
-			// 	std::cerr << "ERROR: incompatible data types in binary operation" << std::endl;
-			// 	std::cout << "Left hand side data type: " << data_type_to_string(mLhs_Node->Get_Data_Type()) << std::endl;
-			// 	std::cout << "Right hand side data type: " << data_type_to_string(mRhs_Node->Get_Data_Type()) << std::endl;
-			// 	exit(EXIT_FAILURE);
-			// }
 		}
 
 	public:
@@ -146,6 +172,7 @@ class CArithmetic_Operation_Node : public CBinary_Operation_Node
 					break;
 			}
 
+			Determine_Data_Type();
 			Validate_Compile();
 		}
 };

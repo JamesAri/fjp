@@ -48,7 +48,7 @@ osx_build()
 	g++ $gcc_flags $gcc_files -o compiler -ll
 	if [ $? -eq 0 ]; then
 		echo "Build finished"
-		echo "Run with: ./build/compiler <source_file>"
+		echo "Run with: ./build/compiler.exe <source_file> [-o <output_file>]"
 	fi
 }
 
@@ -59,7 +59,7 @@ linux_build()
 	g++ $gcc_flags $gcc_files -o compiler -ll
 	if [ $? -eq 0 ]; then
 		echo "Build finished"
-		echo "Run with: ./build/compiler <source_file>"
+		echo "Run with: ./build/compiler.exe <source_file> [-o <output_file>]"
 	fi
 }
 

@@ -31,7 +31,7 @@ void parse_argv(int argc, char* argv[])
 {
 	if (argc < 2)
 	{
-		std::cout << "Usage: " << argv[0] << " <input file>" << std::endl;
+		std::cout << "Usage: " << argv[0] << " <input file> [-d] [-o <output file>]" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -94,6 +94,8 @@ void output_code()
 	}
 
 	file.close();
+
+	std::cout << "Code successfully written to " << output_file << std::endl;
 }
 
 int main(int argc, char* argv[])
@@ -114,9 +116,9 @@ int main(int argc, char* argv[])
 
 	sRoot_Node->Compile_Init();
 	
-	output_code();
-
 	print_identifier_table();
+
+	output_code();
 
 	return EXIT_SUCCESS;
 }

@@ -1,6 +1,8 @@
 #ifndef __TYPES_NODE_H_
 #define __TYPES_NODE_H_
 
+#include <vector>
+
 // inclusive
 constexpr unsigned int Max_Identifier_Length = 31;
 
