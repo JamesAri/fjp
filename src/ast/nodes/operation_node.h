@@ -198,7 +198,7 @@ class CLogical_Operation_Node : public CBinary_Operation_Node
 		CLogical_Operation_Node(CExpression_Node *lhs, CExpression_Node *rhs, const ELogical_Operation &operation)
 			: CBinary_Operation_Node(lhs, rhs), mOperation(operation)
 		{
-			//
+			mData_Type = EData_Type::BOOL_TYPE;
 		}
 
 		virtual void Compile() override
@@ -292,7 +292,7 @@ class CRelational_Operation_Node : public CBinary_Operation_Node
 		CRelational_Operation_Node(CExpression_Node *lhs, CExpression_Node *rhs, const ERelational_Operation &operation)
 			: CBinary_Operation_Node(lhs, rhs), mOperation(operation)
 		{
-			//
+			mData_Type = EData_Type::BOOL_TYPE;
 		}
 
 		virtual void Compile() override

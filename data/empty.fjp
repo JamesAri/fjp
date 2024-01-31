@@ -1,12 +1,1 @@
 // should compile
-
-float main() {
-	int a = 1;
-	float b = 1.5;
-
-	float c = a + b;
-	return c;
-}
-
-main();
-
