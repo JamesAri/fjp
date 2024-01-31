@@ -9,6 +9,7 @@ int main()
 		default:
 			return 666;
 	}
+	return 3;
 }
 
 // should return 666

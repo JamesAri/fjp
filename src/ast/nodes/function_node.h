@@ -17,7 +17,6 @@
 #include "pl0.h"
 #include "generators.h"
 
-
 namespace
 {
 	void compile_function_parameter_list(declaration_list_t *parameter_list)
@@ -95,6 +94,70 @@ namespace
 	}
 }
 
+class CReturn_Node : public CStatement_Node
+{
+	private:
+
+		EData_Type mReturn_Type;
+		CExpression_Node *mExpression_Node;
+
+	public:
+
+		CReturn_Node() : mExpression_Node(nullptr)
+		{
+			//
+		};
+
+		CReturn_Node(CExpression_Node *expression) : mExpression_Node(expression)
+		{
+			//
+		};
+
+		void Update_Return_Type(EData_Type return_type) override
+		{
+			mReturn_Type = return_type;
+
+			if (mExpression_Node == nullptr)
+			{
+				if (return_type != EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: function has " << data_type_to_string(return_type) 
+					<< " return type, but no return value was provided" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+			}
+		};
+
+		void Compile() override
+		{
+			std::cout << "CReturn_Node::Compile()" << std::endl;
+
+			if (mExpression_Node)
+			{
+				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
+				{
+					std::cerr << "ERROR: cannot return void type" << std::endl;
+					exit(EXIT_FAILURE);
+				}
+
+				// push the value on top of the stack just after the control structures, 
+				// function call will retrieve that value
+				emit_INT(3 - sCurrent_Block_Address);
+
+				mExpression_Node->Compile();
+
+				// if variable has non-float type, but the expression has float type, round down to the nearest integer
+				if (mExpression_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE && mReturn_Type != EData_Type::FLOAT_TYPE)
+				{
+					emit_LIT(1);
+					emit_OPR(PL0::Operations::DIV);
+				}
+			}
+
+			emit_RET();
+		};
+};
+
 class CFunction_Node : public CStatement_Node
 {
 	private:
@@ -142,6 +205,13 @@ class CFunction_Node : public CStatement_Node
 			if (mBody_Block_Node == nullptr)
 			{
 				std::cerr << "ERROR: Function body not defined, function prototypes not allowed" << std::endl;
+				exit(EXIT_FAILURE);
+			}
+
+			if (mReturn_Type_Node->mData_Type != EData_Type::VOID_TYPE && 
+				dynamic_cast<CReturn_Node*>(mBody_Block_Node->mStatement_List->back()) == nullptr)
+			{
+				std::cerr << "ERROR: Function body must end with a return statement" << std::endl;
 				exit(EXIT_FAILURE);
 			}
 
@@ -264,70 +334,6 @@ class CFunction_Call_Node : public CExpression_Node
 			{
 				retrieve_value_from_return();
 			}
-		};
-};
-
-class CReturn_Node : public CStatement_Node
-{
-	private:
-
-		EData_Type mReturn_Type;
-		CExpression_Node *mExpression_Node;
-
-	public:
-
-		CReturn_Node() : mExpression_Node(nullptr)
-		{
-			//
-		};
-
-		CReturn_Node(CExpression_Node *expression) : mExpression_Node(expression)
-		{
-			//
-		};
-
-		void Update_Return_Type(EData_Type return_type) override
-		{
-			mReturn_Type = return_type;
-
-			if (mExpression_Node == nullptr)
-			{
-				if (return_type != EData_Type::VOID_TYPE)
-				{
-					std::cerr << "ERROR: function has " << data_type_to_string(return_type) 
-					<< " return type, but no return value was provided" << std::endl;
-					exit(EXIT_FAILURE);
-				}
-			}
-		};
-
-		void Compile() override
-		{
-			std::cout << "CReturn_Node::Compile()" << std::endl;
-
-			if (mExpression_Node)
-			{
-				if (mExpression_Node->Get_Data_Type() == EData_Type::VOID_TYPE)
-				{
-					std::cerr << "ERROR: cannot return void type" << std::endl;
-					exit(EXIT_FAILURE);
-				}
-
-				// push the value on top of the stack just after the control structures, 
-				// function call will retrieve that value
-				emit_INT(3 - sCurrent_Block_Address);
-
-				mExpression_Node->Compile();
-
-				// if variable has non-float type, but the expression has float type, round down to the nearest integer
-				if (mExpression_Node->Get_Data_Type() == EData_Type::FLOAT_TYPE && mReturn_Type != EData_Type::FLOAT_TYPE)
-				{
-					emit_LIT(1);
-					emit_OPR(PL0::Operations::DIV);
-				}
-			}
-
-			emit_RET();
 		};
 };
 
