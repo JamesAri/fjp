@@ -15,6 +15,7 @@ int _switch(int a)
 		default:
 			return 4;
 	}
+	return 5; // unreachable, but we must have return statement at the end
 }
 
 bool _if_else(const char a)
@@ -22,8 +23,9 @@ bool _if_else(const char a)
 	int val = _switch(a);
 	if (val < 3) return true; 		
 	else if (val == 3) return false;
-	else if (val > 3) return true;
-	else return true; // unreachable
+	else return true;
+	
+	return true; // unreachable
 }
 
 void _while(char a)
